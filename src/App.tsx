@@ -1168,7 +1168,9 @@ export default function App() {
         onHeaderStyleChange={setHeaderStyle}
         onBodyStyleChange={setBodyStyle}
         headerSize={headerSize}
+        bodySize={bodySize}
         onHeaderSizeChange={setHeaderSize}
+        onBodySizeChange={setBodySize}
         buttonRadius={buttonRadius}
         buttonVariant={buttonVariant}
         onButtonRadiusChange={setButtonRadius}
