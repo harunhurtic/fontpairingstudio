@@ -33,6 +33,7 @@ interface ColorControlsProps {
   backgroundColor: string;
   buttonBgColor: string;
   buttonTextColor: string;
+  buttonVariant: string;
   onTextColorChange: (color: string) => void;
   onBackgroundColorChange: (color: string) => void;
   onButtonBgColorChange: (color: string) => void;
@@ -51,6 +52,7 @@ export function ColorControls({
   backgroundColor,
   buttonBgColor,
   buttonTextColor,
+  buttonVariant,
   onTextColorChange,
   onBackgroundColorChange,
   onButtonBgColorChange,
@@ -122,9 +124,14 @@ export function ColorControls({
   const applyColorPairing = (pairing: ColorPairing) => {
     onTextColorChange(pairing.text);
     onBackgroundColorChange(pairing.background);
-    // Make button background the same as text color, but ensure button text is visible
+    // Make button background the same as text color
     onButtonBgColorChange(pairing.text);
-    onButtonTextColorChange(pairing.background);
+    // For outline/ghost buttons, use text color; for filled, use contrasting color
+    if (buttonVariant === 'outline' || buttonVariant === 'ghost') {
+      onButtonTextColorChange(pairing.text); // Same as text color
+    } else {
+      onButtonTextColorChange(pairing.background); // Contrasting color
+    }
   };
 
   return (
@@ -186,19 +193,28 @@ export function ColorControls({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm">Button Background Color</label>
+              <label className="text-sm">
+                {buttonVariant === 'outline' ? 'Button Outline Color' : 'Button Background Color'}
+              </label>
               <div className="flex items-center gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
                     <button
-                      className="w-12 h-12 flex-shrink-0 rounded border-2 cursor-pointer hover:border-gray-400 transition-colors"
-                      style={{ backgroundColor: buttonBgColor }}
-                      title="Pick button background color"
+                      className="w-12 h-12 flex-shrink-0 rounded border-2 transition-colors"
+                      style={{ 
+                        backgroundColor: buttonBgColor,
+                        opacity: buttonVariant === 'ghost' ? 0.5 : 1,
+                        cursor: buttonVariant === 'ghost' ? 'not-allowed' : 'pointer'
+                      }}
+                      title={buttonVariant === 'ghost' ? 'Disabled for ghost buttons' : buttonVariant === 'outline' ? 'Pick button outline color' : 'Pick button background color'}
+                      disabled={buttonVariant === 'ghost'}
                     />
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-3">
-                    <HexColorPicker color={buttonBgColor} onChange={onButtonBgColorChange} />
-                  </PopoverContent>
+                  {buttonVariant !== 'ghost' && (
+                    <PopoverContent className="w-auto p-3">
+                      <HexColorPicker color={buttonBgColor} onChange={onButtonBgColorChange} />
+                    </PopoverContent>
+                  )}
                 </Popover>
                 <input
                   type="text"
@@ -208,6 +224,11 @@ export function ColorControls({
                   }
                   className="flex-1 min-w-0 px-2 py-2 border rounded text-sm"
                   placeholder="#000000"
+                  disabled={buttonVariant === 'ghost'}
+                  style={{ 
+                    opacity: buttonVariant === 'ghost' ? 0.5 : 1,
+                    cursor: buttonVariant === 'ghost' ? 'not-allowed' : 'text'
+                  }}
                 />
               </div>
             </div>

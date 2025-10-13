@@ -585,9 +585,29 @@ export function FontPreview({
                     Color Contrast: {bothPass ? 'Pass' : 'Fail'} (Text: {textContrast.ratio}:1, Button: {buttonContrast.ratio}:1)
                   </Badge>
                 );
+              } else if (buttonVariant === 'outline') {
+                // Outline button: check both text vs page bg AND outline vs page bg
+                const textContrast = checkContrast(buttonTextColor, backgroundColor);
+                const outlineContrast = checkContrast(buttonBgColor, backgroundColor);
+                const textPasses = textContrast.aa;
+                const outlinePasses = outlineContrast.aaLarge; // UI components need 3:1 (AA Large)
+                const bothPass = textPasses && outlinePasses;
+                
+                return (
+                  <Badge 
+                    variant="outline"
+                    className={`text-xs ${
+                      bothPass
+                        ? 'bg-green-100 text-green-800 border-green-200'
+                        : 'bg-red-100 text-red-800 border-red-200'
+                    }`}
+                  >
+                    Color Contrast: {bothPass ? 'Pass' : 'Fail'} (Text: {textContrast.ratio}:1, Outline: {outlineContrast.ratio}:1)
+                  </Badge>
+                );
               } else {
-                // Outline/Ghost button: text and border are buttonBgColor on page background
-                return renderContrastBadge(buttonBgColor, backgroundColor, false);
+                // Ghost button: check button text vs page background
+                return renderContrastBadge(buttonTextColor, backgroundColor, false);
               }
             })()}
           </div>
@@ -619,9 +639,9 @@ export function FontPreview({
               fontWeight: Math.max(bodyWeight + 100, 500),
               fontStyle: bodyStyle,
               fontSize: '0.875rem',
-              color: buttonVariant === 'filled' ? buttonTextColor : buttonBgColor,
+              color: buttonTextColor,
               backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
-              borderColor: buttonBgColor
+              borderColor: buttonVariant === 'outline' ? buttonBgColor : buttonVariant === 'ghost' ? 'transparent' : buttonBgColor
             }}
           >
             {buttonText}

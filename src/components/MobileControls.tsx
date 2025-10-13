@@ -210,6 +210,7 @@ export function MobileControls({
                   backgroundColor={backgroundColor}
                   buttonBgColor={buttonBgColor}
                   buttonTextColor={buttonTextColor}
+                  buttonVariant={buttonVariant}
                   onTextColorChange={onTextColorChange}
                   onBackgroundColorChange={onBackgroundColorChange}
                   onButtonBgColorChange={onButtonBgColorChange}

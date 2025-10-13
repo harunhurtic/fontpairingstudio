@@ -46,7 +46,7 @@ import {
   fontPairings,
   validateFontPairings,
 } from "./utils/fonts";
-import { generateAccessibleColorPair } from "./utils/contrast";
+import { generateAccessibleColorPair, checkContrast } from "./utils/contrast";
 
 export default function App() {
   // Validate font pairings on mount (development only)
@@ -198,21 +198,48 @@ export default function App() {
   ]);
 
   // Toggle dark mode
+  // Toggle dark mode - only triggered by isDarkMode changes
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
       setTextColor("#f5f5f5");
       setBackgroundColor("#1a1a1a");
       setButtonBgColor("#f5f5f5");
-      setButtonTextColor("#1a1a1a");
+      // For outline/ghost buttons, use text color; for filled, use contrasting color
+      if (buttonVariant === 'outline' || buttonVariant === 'ghost') {
+        setButtonTextColor("#f5f5f5"); // Same as text color
+      } else {
+        setButtonTextColor("#1a1a1a");
+      }
     } else {
       document.documentElement.classList.remove("dark");
       setTextColor("#1a1a1a");
       setBackgroundColor("#ffffff");
       setButtonBgColor("#1a1a1a");
-      setButtonTextColor("#ffffff");
+      // For outline/ghost buttons, use text color; for filled, use contrasting color
+      if (buttonVariant === 'outline' || buttonVariant === 'ghost') {
+        setButtonTextColor("#1a1a1a"); // Same as text color
+      } else {
+        setButtonTextColor("#ffffff");
+      }
     }
   }, [isDarkMode]);
+
+  // Automatically adjust button text color when variant changes (without resetting background)
+  useEffect(() => {
+    if (buttonVariant === 'ghost' || buttonVariant === 'outline') {
+      // For outline/ghost buttons, use the page text color
+      setButtonTextColor(textColor);
+    } else {
+      // For filled buttons, use contrasting color against button background
+      const contrast = checkContrast(textColor, buttonBgColor);
+      if (contrast.aa) {
+        setButtonTextColor(textColor);
+      } else {
+        setButtonTextColor(backgroundColor);
+      }
+    }
+  }, [buttonVariant]);
 
   const handleRandomize = () => {
     let newPairData;
@@ -325,9 +352,14 @@ export default function App() {
     } = generateAccessibleColorPair();
     setBackgroundColor(newBackgroundColor);
     setTextColor(newTextColor);
-    // Make button background the same as text color, but ensure button text is visible
+    // Make button background the same as text color
     setButtonBgColor(newTextColor);
-    setButtonTextColor(newBackgroundColor);
+    // For outline/ghost buttons, use text color; for filled, use contrasting color
+    if (buttonVariant === 'outline' || buttonVariant === 'ghost') {
+      setButtonTextColor(newTextColor); // Same as text color
+    } else {
+      setButtonTextColor(newBackgroundColor); // Contrasting color
+    }
   };
 
   const handleHeaderFontChange = (font: string) => {
@@ -1240,6 +1272,7 @@ export default function App() {
                       backgroundColor={backgroundColor}
                       buttonBgColor={buttonBgColor}
                       buttonTextColor={buttonTextColor}
+                      buttonVariant={buttonVariant}
                       onTextColorChange={setTextColor}
                       onBackgroundColorChange={
                         setBackgroundColor
