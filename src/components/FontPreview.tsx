@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Edit, Check, RotateCcw, Shuffle, Heart } from 'lucide-react';
 import { loadGoogleFont, getFontData } from '../utils/fonts';
+import { checkContrast } from '../utils/contrast';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
+import { Badge } from './ui/badge';
 
 interface FontPreviewProps {
   headerFont: string;
@@ -225,6 +227,25 @@ export function FontPreview({
     setEditingSection(null);
   };
 
+  // Helper function to render contrast check badge
+  const renderContrastBadge = (foreground: string, background: string, isLargeText: boolean = false) => {
+    const contrast = checkContrast(foreground, background);
+    const passes = isLargeText ? contrast.aaLarge : contrast.aa;
+    
+    return (
+      <Badge 
+        variant="outline"
+        className={`text-xs ${
+          passes
+            ? 'bg-green-100 text-green-800 border-green-200'
+            : 'bg-red-100 text-red-800 border-red-200'
+        }`}
+      >
+        Color Contrast: {passes ? 'Pass' : 'Fail'} ({contrast.ratio}:1)
+      </Badge>
+    );
+  };
+
   return (
     <div className="space-y-4">
       {/* Control Bar */}
@@ -321,7 +342,7 @@ export function FontPreview({
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <span 
                   style={{
                     fontFamily: bodyFontFamily,
@@ -333,6 +354,7 @@ export function FontPreview({
                 >
                   Header Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
                 </span>
+                {renderContrastBadge(textColor, backgroundColor, true)}
               </div>
               {editingSection === 'header' ? (
                 <div className="p-3 rounded-md border-2 border-dashed" style={{ 
@@ -362,12 +384,25 @@ export function FontPreview({
                     fontStyle: headerStyle,
                     fontSize: `${headerSize}px`,
                     lineHeight: '1.2',
-                    marginBottom: '0'
+                    marginBottom: '0.5rem'
                   }}
                 >
                   {headerText}
                 </h1>
               )}
+              {/* Font info under header */}
+              <div className="mt-2">
+                <p 
+                  style={{
+                    fontFamily: bodyFontFamily,
+                    fontSize: '0.75rem',
+                    opacity: 0.6,
+                    margin: 0
+                  }}
+                >
+                  {headerFont} • {headerFontData?.category || 'sans-serif'} • {headerWeight} • {headerStyle} • {headerSize}px • {headerFontData?.weights?.length || 0} weights
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -379,7 +414,7 @@ export function FontPreview({
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <span 
                   style={{
                     fontFamily: bodyFontFamily,
@@ -391,6 +426,7 @@ export function FontPreview({
                 >
                   Body Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
                 </span>
+                {renderContrastBadge(textColor, backgroundColor, false)}
               </div>
               {editingSection === 'body' ? (
                 <div className="p-3 rounded-md border-2 border-dashed" style={{ 
@@ -423,7 +459,7 @@ export function FontPreview({
                         fontStyle: bodyStyle,
                         fontSize: `${bodySize}px`,
                         lineHeight: '1.6',
-                        marginBottom: '1rem'
+                        marginBottom: '0.5rem'
                       }}
                     >
                       {paragraph}
@@ -431,6 +467,19 @@ export function FontPreview({
                   ))}
                 </>
               )}
+              {/* Font info under body */}
+              <div className="mt-2">
+                <p 
+                  style={{
+                    fontFamily: bodyFontFamily,
+                    fontSize: '0.75rem',
+                    opacity: 0.6,
+                    margin: 0
+                  }}
+                >
+                  {bodyFont} • {bodyFontData?.category || 'sans-serif'} • {bodyWeight} • {bodyStyle} • {bodySize}px • {bodyFontData?.weights?.length || 0} weights
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -503,7 +552,7 @@ export function FontPreview({
           className={`mb-8 ${isEditMode ? 'cursor-pointer' : ''}`}
           onClick={() => handleSectionClick('button')}
         >
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span 
               style={{
                 fontFamily: bodyFontFamily,
@@ -515,6 +564,32 @@ export function FontPreview({
             >
               Button {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
             </span>
+            {(() => {
+              if (buttonVariant === 'filled') {
+                // Filled button: check both text vs button bg AND button bg vs page bg
+                const textContrast = checkContrast(buttonTextColor, buttonBgColor);
+                const buttonContrast = checkContrast(buttonBgColor, backgroundColor);
+                const textPasses = textContrast.aa;
+                const buttonPasses = buttonContrast.aaLarge; // UI components need 3:1 (AA Large)
+                const bothPass = textPasses && buttonPasses;
+                
+                return (
+                  <Badge 
+                    variant="outline"
+                    className={`text-xs ${
+                      bothPass
+                        ? 'bg-green-100 text-green-800 border-green-200'
+                        : 'bg-red-100 text-red-800 border-red-200'
+                    }`}
+                  >
+                    Color Contrast: {bothPass ? 'Pass' : 'Fail'} (Text: {textContrast.ratio}:1, Button: {buttonContrast.ratio}:1)
+                  </Badge>
+                );
+              } else {
+                // Outline/Ghost button: text and border are buttonBgColor on page background
+                return renderContrastBadge(buttonBgColor, backgroundColor, false);
+              }
+            })()}
           </div>
           
           {editingSection === 'button' ? (
@@ -551,80 +626,23 @@ export function FontPreview({
           >
             {buttonText}
           </button>
+          
+          {/* Font info under button */}
+          <div className="mt-3">
+            <p 
+              style={{
+                fontFamily: bodyFontFamily,
+                fontSize: '0.75rem',
+                opacity: 0.6,
+                margin: 0
+              }}
+            >
+              {bodyFont} • {bodyFontData?.category || 'sans-serif'} • {Math.max(bodyWeight + 100, 500)} • {bodyStyle} • Button
+            </p>
+          </div>
         </div>
 
-        {/* Font Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 mb-8">
-          <div>
-            <h3 
-              style={{
-                fontFamily: headerFontFamily,
-                fontWeight: headerWeight,
-                fontStyle: headerStyle,
-                fontSize: '1.25rem',
-                marginBottom: '0.5rem'
-              }}
-            >
-              {headerFont}
-            </h3>
-            <p 
-              style={{
-                fontFamily: bodyFontFamily,
-                fontWeight: bodyWeight,
-                fontStyle: bodyStyle,
-                fontSize: '0.875rem',
-                opacity: 0.7,
-                marginBottom: '0.5rem'
-              }}
-            >
-              Headers • {headerWeight} • {headerStyle} • {headerSize}px
-            </p>
-            <p 
-              style={{
-                fontFamily: bodyFontFamily,
-                fontSize: '0.75rem',
-                opacity: 0.6
-              }}
-            >
-              {headerFontData?.category || 'sans-serif'} • {headerFontData?.weights?.length || 0} weights
-            </p>
-          </div>
-          
-          <div>
-            <h3 
-              style={{
-                fontFamily: bodyFontFamily,
-                fontWeight: bodyWeight,
-                fontStyle: bodyStyle,
-                fontSize: '1.25rem',
-                marginBottom: '0.5rem'
-              }}
-            >
-              {bodyFont}
-            </h3>
-            <p 
-              style={{
-                fontFamily: bodyFontFamily,
-                fontWeight: bodyWeight,
-                fontStyle: bodyStyle,
-                fontSize: '0.875rem',
-                opacity: 0.7,
-                marginBottom: '0.5rem'
-              }}
-            >
-              Body • {bodyWeight} • {bodyStyle}
-            </p>
-            <p 
-              style={{
-                fontFamily: bodyFontFamily,
-                fontSize: '0.75rem',
-                opacity: 0.6
-              }}
-            >
-              {bodyFontData?.category || 'sans-serif'} • {bodyFontData?.weights?.length || 0} weights
-            </p>
-          </div>
-        </div>
+
       </div>
     </div>
   );

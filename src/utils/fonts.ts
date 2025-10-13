@@ -1573,5 +1573,6 @@ export function loadGoogleFont(fontName: string, weights: number[] = [400], styl
   const link = document.createElement('link');
   link.href = `https://fonts.googleapis.com/css2?family=${family}${styleParam}&display=swap`;
   link.rel = 'stylesheet';
+  link.crossOrigin = 'anonymous';
   document.head.appendChild(link);
 }

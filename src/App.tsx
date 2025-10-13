@@ -71,6 +71,7 @@ export default function App() {
   }, []);
 
   const fontCodeRef = useRef<FontCodeRef>(null);
+  const savedPairingsRef = useRef<HTMLDivElement>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] =
     useState(false);
@@ -470,6 +471,26 @@ export default function App() {
       if (pairings.length >= 20) {
         toast.error(
           "You can only save up to 20 pairings. Please delete some before adding more.",
+          {
+            icon: (
+              <div
+                style={{
+                  backgroundColor: "#ef4444",
+                  borderRadius: "50%",
+                  width: "20px",
+                  height: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                }}
+              >
+                !
+              </div>
+            ),
+          },
         );
         return;
       }
@@ -496,8 +517,47 @@ export default function App() {
       );
       setSavedPairingsVersion((v) => v + 1);
 
-      // Show success toast
-      toast.success("Font pairing saved!");
+      // Show success toast with action to view saved pairings
+      toast.success("Font pairing saved!", {
+        action: {
+          label: "Show my saved pairings",
+          onClick: () => {
+            savedPairingsRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          },
+        },
+        icon: (
+          <div
+            style={{
+              backgroundColor: "#4d2487",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 6L5 9L10 3"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        ),
+      });
     } catch (error) {
       console.error("Error saving pairing:", error);
       toast.error(
@@ -942,13 +1002,115 @@ export default function App() {
                       p.bodyFont === currentPair.body,
                   );
                   if (existingIndex >= 0) {
+                    // Store the removed pairing for undo
+                    const removedPairing =
+                      pairings[existingIndex];
                     pairings.splice(existingIndex, 1);
                     localStorage.setItem(
                       "fontPairingStudio_savedPairings",
                       JSON.stringify(pairings),
                     );
                     setSavedPairingsVersion((v) => v + 1);
-                    toast.success("Font pairing removed");
+
+                    // Show toast with undo action
+                    toast.success("Font pairing removed", {
+                      action: {
+                        label: "Undo",
+                        onClick: () => {
+                          try {
+                            const currentStored =
+                              localStorage.getItem(
+                                "fontPairingStudio_savedPairings",
+                              );
+                            let currentPairings = currentStored
+                              ? JSON.parse(currentStored)
+                              : [];
+                            currentPairings.unshift(
+                              removedPairing,
+                            );
+                            localStorage.setItem(
+                              "fontPairingStudio_savedPairings",
+                              JSON.stringify(currentPairings),
+                            );
+                            setSavedPairingsVersion(
+                              (v) => v + 1,
+                            );
+                            toast.success(
+                              "Font pairing restored!",
+                              {
+                                icon: (
+                                  <div
+                                    style={{
+                                      backgroundColor:
+                                        "#4d2487",
+                                      borderRadius: "50%",
+                                      width: "20px",
+                                      height: "20px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <svg
+                                      width="12"
+                                      height="12"
+                                      viewBox="0 0 12 12"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M2 6L5 9L10 3"
+                                        stroke="white"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </div>
+                                ),
+                              },
+                            );
+                          } catch (error) {
+                            console.error(
+                              "Error restoring pairing:",
+                              error,
+                            );
+                            toast.error(
+                              "Failed to restore pairing",
+                            );
+                          }
+                        },
+                      },
+                      icon: (
+                        <div
+                          style={{
+                            backgroundColor: "#4d2487",
+                            borderRadius: "50%",
+                            width: "20px",
+                            height: "20px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M2 6L5 9L10 3"
+                              stroke="white"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                      ),
+                    });
                   }
                 } catch (error) {
                   console.error(
@@ -963,14 +1125,16 @@ export default function App() {
               headerFont={currentPair.header}
               bodyFont={currentPair.body}
             />
-            <SavedPairings
-              onLoadPairing={handleLoadSavedPairing}
-              isDarkMode={isDarkMode}
-              onPairingsChange={() =>
-                setSavedPairingsVersion((v) => v + 1)
-              }
-              savedPairingsVersion={savedPairingsVersion}
-            />
+            <div ref={savedPairingsRef}>
+              <SavedPairings
+                onLoadPairing={handleLoadSavedPairing}
+                isDarkMode={isDarkMode}
+                onPairingsChange={() =>
+                  setSavedPairingsVersion((v) => v + 1)
+                }
+                savedPairingsVersion={savedPairingsVersion}
+              />
+            </div>
           </div>
 
           {/* Controls Sidebar - Hidden on mobile */}
@@ -1137,7 +1301,7 @@ export default function App() {
             curated pairings available
           </p>
           <p className="mt-4 pt-4 border-t">
-            Developed and created by{" "}
+            Developed and created with 💜 by{" "}
             <a
               href="https://hurtic.net"
               target="_blank"

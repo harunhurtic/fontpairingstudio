@@ -198,3 +198,27 @@
 html {
   font-size: var(--font-size);
 }
+
+/* Sonner toast action button styling - purple theme */
+[data-sonner-toast] button[data-button] {
+  background-color: #4d2487 !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.375rem !important;
+  font-weight: 500 !important;
+  transition: background-color 0.2s !important;
+}
+
+[data-sonner-toast] button[data-button]:hover {
+  background-color: #3d1d6d !important;
+}
+
+.dark [data-sonner-toast] button[data-button] {
+  background-color: #4d2487 !important;
+  color: white !important;
+}
+
+.dark [data-sonner-toast] button[data-button]:hover {
+  background-color: #3d1d6d !important;
+}

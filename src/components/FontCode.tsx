@@ -62,7 +62,35 @@ export const FontCode = forwardRef<FontCodeRef, FontCodeProps>((props, ref) => {
         await navigator.clipboard.writeText(text);
         setCopiedSection(section);
         setTimeout(() => setCopiedSection(null), 2000);
-        toast.success('Copied to clipboard!');
+        toast.success('Copied to clipboard!', {
+          icon: (
+            <div style={{ 
+              backgroundColor: '#4d2487', 
+              borderRadius: '50%', 
+              width: '20px', 
+              height: '20px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center' 
+            }}>
+              <svg 
+                width="12" 
+                height="12" 
+                viewBox="0 0 12 12" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path 
+                  d="M2 6L5 9L10 3" 
+                  stroke="white" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          )
+        });
         return;
       }
     } catch (clipboardErr) {
@@ -88,7 +116,35 @@ export const FontCode = forwardRef<FontCodeRef, FontCodeProps>((props, ref) => {
         if (successful) {
           setCopiedSection(section);
           setTimeout(() => setCopiedSection(null), 2000);
-          toast.success('Copied to clipboard!');
+          toast.success('Copied to clipboard!', {
+            icon: (
+              <div style={{ 
+                backgroundColor: '#4d2487', 
+                borderRadius: '50%', 
+                width: '20px', 
+                height: '20px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <svg 
+                  width="12" 
+                  height="12" 
+                  viewBox="0 0 12 12" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path 
+                    d="M2 6L5 9L10 3" 
+                    stroke="white" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            )
+          });
         } else {
           toast.error('Failed to copy. Please copy manually.');
         }
@@ -275,7 +331,35 @@ ${getWebCSS()}
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success('Font pairing specification downloaded!');
+    toast.success('Font pairing specification downloaded!', {
+      icon: (
+        <div style={{ 
+          backgroundColor: '#4d2487', 
+          borderRadius: '50%', 
+          width: '20px', 
+          height: '20px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center' 
+        }}>
+          <svg 
+            width="12" 
+            height="12" 
+            viewBox="0 0 12 12" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M2 6L5 9L10 3" 
+              stroke="white" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      )
+    });
   };
 
   return (

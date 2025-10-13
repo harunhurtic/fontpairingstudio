@@ -50,6 +50,7 @@ export function SavedPairings({ onLoadPairing, isDarkMode, onPairingsChange, sav
   };
 
   const deletePairing = (id: string) => {
+    const pairingToDelete = savedPairings.find(p => p.id === id);
     const updatedPairings = savedPairings.filter(p => p.id !== id);
     setSavedPairings(updatedPairings);
     
@@ -58,7 +59,86 @@ export function SavedPairings({ onLoadPairing, isDarkMode, onPairingsChange, sav
       if (onPairingsChange) {
         onPairingsChange();
       }
-      toast.success('Font pairing removed!');
+      
+      // Show toast with undo action
+      toast.success('Font pairing removed!', {
+        action: {
+          label: 'Undo',
+          onClick: () => {
+            if (pairingToDelete) {
+              try {
+                const currentStored = localStorage.getItem(STORAGE_KEY);
+                let currentPairings = currentStored ? JSON.parse(currentStored) : [];
+                currentPairings.unshift(pairingToDelete);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(currentPairings));
+                setSavedPairings(currentPairings);
+                if (onPairingsChange) {
+                  onPairingsChange();
+                }
+                toast.success('Font pairing restored!', {
+                  icon: (
+                    <div style={{ 
+                      backgroundColor: '#4d2487', 
+                      borderRadius: '50%', 
+                      width: '20px', 
+                      height: '20px', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center' 
+                    }}>
+                      <svg 
+                        width="12" 
+                        height="12" 
+                        viewBox="0 0 12 12" 
+                        fill="none" 
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path 
+                          d="M2 6L5 9L10 3" 
+                          stroke="white" 
+                          strokeWidth="2" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )
+                });
+              } catch (error) {
+                console.error('Error restoring pairing:', error);
+                toast.error('Failed to restore pairing');
+              }
+            }
+          }
+        },
+        icon: (
+          <div style={{ 
+            backgroundColor: '#4d2487', 
+            borderRadius: '50%', 
+            width: '20px', 
+            height: '20px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center' 
+          }}>
+            <svg 
+              width="12" 
+              height="12" 
+              viewBox="0 0 12 12" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                d="M2 6L5 9L10 3" 
+                stroke="white" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        )
+      });
     } catch (error) {
       console.error('Error deleting pairing:', error);
       toast.error('Failed to remove font pairing');
