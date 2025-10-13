@@ -65,17 +65,23 @@ export function ColorControls({
     backgroundColor,
   );
   
-  // Check button contrast (button text vs button background)
-  const buttonContrastResult = checkContrast(
-    buttonTextColor,
-    buttonBgColor,
-  );
+  // Check button contrast based on variant (matching FontPreview logic)
+  let buttonTextContrastResult: ContrastResult;
+  let buttonOutlineOrBgContrastResult: ContrastResult;
   
-  // Check button visibility (button background vs page background)
-  const buttonVisibilityResult = checkContrast(
-    buttonBgColor,
-    backgroundColor,
-  );
+  if (buttonVariant === 'filled') {
+    // Filled button: check text vs button bg AND button bg vs page bg
+    buttonTextContrastResult = checkContrast(buttonTextColor, buttonBgColor);
+    buttonOutlineOrBgContrastResult = checkContrast(buttonBgColor, backgroundColor);
+  } else if (buttonVariant === 'outline') {
+    // Outline button: check text vs page bg AND outline vs page bg
+    buttonTextContrastResult = checkContrast(buttonTextColor, backgroundColor);
+    buttonOutlineOrBgContrastResult = checkContrast(buttonBgColor, backgroundColor);
+  } else {
+    // Ghost button: check only text vs page bg
+    buttonTextContrastResult = checkContrast(buttonTextColor, backgroundColor);
+    buttonOutlineOrBgContrastResult = checkContrast(buttonTextColor, backgroundColor); // Same as text for ghost
+  }
 
   const getContrastIcon = (result: ContrastResult) => {
     if (result.aaa)
@@ -406,7 +412,7 @@ export function ColorControls({
               </p>
             </div>
 
-            {/* Graphical Objects - Button Text Readability */}
+            {/* Button Text Readability */}
             <div className="space-y-2 pb-3 border-b">
               <h4 className="text-sm font-medium">
                 Button Text Readability
@@ -418,12 +424,12 @@ export function ColorControls({
                 <Badge
                   variant="outline"
                   className={
-                    buttonContrastResult.aa
+                    buttonTextContrastResult.aa
                       ? "bg-green-100 text-green-800 border-green-200"
                       : "bg-red-100 text-red-800 border-red-200"
                   }
                 >
-                  {buttonContrastResult.aa ? "Pass" : "Fail"}
+                  {buttonTextContrastResult.aa ? "Pass" : "Fail"}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -433,23 +439,26 @@ export function ColorControls({
                 <Badge
                   variant="outline"
                   className={
-                    buttonContrastResult.aaa
+                    buttonTextContrastResult.aaa
                       ? "bg-green-100 text-green-800 border-green-200"
                       : "bg-red-100 text-red-800 border-red-200"
                   }
                 >
-                  {buttonContrastResult.aaa ? "Pass" : "Fail"}
+                  {buttonTextContrastResult.aaa ? "Pass" : "Fail"}
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground">
-                Button text vs button background | Ratio: {buttonContrastResult.ratio}:1
+                {buttonVariant === 'filled' 
+                  ? `Button text vs button background | Ratio: ${buttonTextContrastResult.ratio}:1`
+                  : `Button text vs page background | Ratio: ${buttonTextContrastResult.ratio}:1`
+                }
               </p>
             </div>
             
-            {/* Button Visibility */}
+            {/* Button Visibility / Outline Visibility */}
             <div className="space-y-2">
               <h4 className="text-sm font-medium">
-                Button Visibility (UI Components)
+                {buttonVariant === 'outline' ? 'Button Outline Visibility' : 'Button Visibility (UI Components)'}
               </h4>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">
@@ -458,16 +467,21 @@ export function ColorControls({
                 <Badge
                   variant="outline"
                   className={
-                    buttonVisibilityResult.aaLarge
+                    buttonOutlineOrBgContrastResult.aaLarge
                       ? "bg-green-100 text-green-800 border-green-200"
                       : "bg-red-100 text-red-800 border-red-200"
                   }
                 >
-                  {buttonVisibilityResult.aaLarge ? "Pass" : "Fail"}
+                  {buttonOutlineOrBgContrastResult.aaLarge ? "Pass" : "Fail"}
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground">
-                Button vs page background | AA requires 3:1 | Ratio: {buttonVisibilityResult.ratio}:1
+                {buttonVariant === 'outline' 
+                  ? `Button outline vs page background | AA requires 3:1 | Ratio: ${buttonOutlineOrBgContrastResult.ratio}:1`
+                  : buttonVariant === 'filled'
+                  ? `Button background vs page background | AA requires 3:1 | Ratio: ${buttonOutlineOrBgContrastResult.ratio}:1`
+                  : `Ghost buttons only need text contrast | Ratio: ${buttonOutlineOrBgContrastResult.ratio}:1`
+                }
               </p>
             </div>
           </div>
