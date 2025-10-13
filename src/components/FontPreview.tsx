@@ -342,7 +342,7 @@ export function FontPreview({
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <div className="mb-2">
                 <span 
                   style={{
                     fontFamily: bodyFontFamily,
@@ -354,7 +354,9 @@ export function FontPreview({
                 >
                   Header Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
                 </span>
-                {renderContrastBadge(textColor, backgroundColor, true)}
+                <div className="mt-1">
+                  {renderContrastBadge(textColor, backgroundColor, true)}
+                </div>
               </div>
               {editingSection === 'header' ? (
                 <div className="p-3 rounded-md border-2 border-dashed" style={{ 
@@ -414,7 +416,7 @@ export function FontPreview({
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <div className="mb-2">
                 <span 
                   style={{
                     fontFamily: bodyFontFamily,
@@ -426,7 +428,9 @@ export function FontPreview({
                 >
                   Body Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
                 </span>
-                {renderContrastBadge(textColor, backgroundColor, false)}
+                <div className="mt-1">
+                  {renderContrastBadge(textColor, backgroundColor, false)}
+                </div>
               </div>
               {editingSection === 'body' ? (
                 <div className="p-3 rounded-md border-2 border-dashed" style={{ 
@@ -552,7 +556,7 @@ export function FontPreview({
           className={`mb-8 ${isEditMode ? 'cursor-pointer' : ''}`}
           onClick={() => handleSectionClick('button')}
         >
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <div className="mb-2">
             <span 
               style={{
                 fontFamily: bodyFontFamily,
@@ -564,52 +568,54 @@ export function FontPreview({
             >
               Button {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
             </span>
-            {(() => {
-              if (buttonVariant === 'filled') {
-                // Filled button: check both text vs button bg AND button bg vs page bg
-                const textContrast = checkContrast(buttonTextColor, buttonBgColor);
-                const buttonContrast = checkContrast(buttonBgColor, backgroundColor);
-                const textPasses = textContrast.aa;
-                const buttonPasses = buttonContrast.aaLarge; // UI components need 3:1 (AA Large)
-                const bothPass = textPasses && buttonPasses;
-                
-                return (
-                  <Badge 
-                    variant="outline"
-                    className={`text-xs ${
-                      bothPass
-                        ? 'bg-green-100 text-green-800 border-green-200'
-                        : 'bg-red-100 text-red-800 border-red-200'
-                    }`}
-                  >
-                    Color Contrast: {bothPass ? 'Pass' : 'Fail'} (Text: {textContrast.ratio}:1, Button: {buttonContrast.ratio}:1)
-                  </Badge>
-                );
-              } else if (buttonVariant === 'outline') {
-                // Outline button: check both text vs page bg AND outline vs page bg
-                const textContrast = checkContrast(buttonTextColor, backgroundColor);
-                const outlineContrast = checkContrast(buttonBgColor, backgroundColor);
-                const textPasses = textContrast.aa;
-                const outlinePasses = outlineContrast.aaLarge; // UI components need 3:1 (AA Large)
-                const bothPass = textPasses && outlinePasses;
-                
-                return (
-                  <Badge 
-                    variant="outline"
-                    className={`text-xs ${
-                      bothPass
-                        ? 'bg-green-100 text-green-800 border-green-200'
-                        : 'bg-red-100 text-red-800 border-red-200'
-                    }`}
-                  >
-                    Color Contrast: {bothPass ? 'Pass' : 'Fail'} (Text: {textContrast.ratio}:1, Outline: {outlineContrast.ratio}:1)
-                  </Badge>
-                );
-              } else {
-                // Ghost button: check button text vs page background
-                return renderContrastBadge(buttonTextColor, backgroundColor, false);
-              }
-            })()}
+            <div className="mt-1">
+              {(() => {
+                if (buttonVariant === 'filled') {
+                  // Filled button: check both text vs button bg AND button bg vs page bg
+                  const textContrast = checkContrast(buttonTextColor, buttonBgColor);
+                  const buttonContrast = checkContrast(buttonBgColor, backgroundColor);
+                  const textPasses = textContrast.aa;
+                  const buttonPasses = buttonContrast.aaLarge; // UI components need 3:1 (AA Large)
+                  const bothPass = textPasses && buttonPasses;
+                  
+                  return (
+                    <Badge 
+                      variant="outline"
+                      className={`text-xs ${
+                        bothPass
+                          ? 'bg-green-100 text-green-800 border-green-200'
+                          : 'bg-red-100 text-red-800 border-red-200'
+                      }`}
+                    >
+                      Color Contrast: {bothPass ? 'Pass' : 'Fail'} (Text: {textContrast.ratio}:1, Button: {buttonContrast.ratio}:1)
+                    </Badge>
+                  );
+                } else if (buttonVariant === 'outline') {
+                  // Outline button: check both text vs page bg AND outline vs page bg
+                  const textContrast = checkContrast(buttonTextColor, backgroundColor);
+                  const outlineContrast = checkContrast(buttonBgColor, backgroundColor);
+                  const textPasses = textContrast.aa;
+                  const outlinePasses = outlineContrast.aaLarge; // UI components need 3:1 (AA Large)
+                  const bothPass = textPasses && outlinePasses;
+                  
+                  return (
+                    <Badge 
+                      variant="outline"
+                      className={`text-xs ${
+                        bothPass
+                          ? 'bg-green-100 text-green-800 border-green-200'
+                          : 'bg-red-100 text-red-800 border-red-200'
+                      }`}
+                    >
+                      Color Contrast: {bothPass ? 'Pass' : 'Fail'} (Text: {textContrast.ratio}:1, Outline: {outlineContrast.ratio}:1)
+                    </Badge>
+                  );
+                } else {
+                  // Ghost button: check button text vs page background
+                  return renderContrastBadge(buttonTextColor, backgroundColor, false);
+                }
+              })()}
+            </div>
           </div>
           
           {editingSection === 'button' ? (

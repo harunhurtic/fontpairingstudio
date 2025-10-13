@@ -245,7 +245,7 @@ export function SavedPairings({ onLoadPairing, isDarkMode, onPairingsChange, sav
                   className="flex-1"
                 >
                   <Eye className="w-3 h-3 mr-1" />
-                  Preview
+                  View
                 </Button>
                 <Button
                   onClick={() => deletePairing(pairing.id)}
