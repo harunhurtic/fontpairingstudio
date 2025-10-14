@@ -686,8 +686,8 @@ export default function App() {
               </span>
             </h1>
             <p className="text-sm text-muted-foreground">
-              Discover perfect font combinations with Google
-              Fonts
+              Discover and Visualize perfect font combinations
+              with Google Fonts
             </p>
           </div>
 
