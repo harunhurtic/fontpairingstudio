@@ -13,7 +13,7 @@
   12 Style Categories, 
   WCAG 2.1 AA/AAA Checking, 
   Inline Text Editing, 
-  Visualize the fonts in different previews
+  Visualize the fonts in different previews,
   Header & Body Size Controls, 
   Weight & Style Customization, 
   Button Style & Preview, 
