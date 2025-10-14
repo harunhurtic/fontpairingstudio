@@ -52,6 +52,20 @@ import {
 } from "./utils/contrast";
 
 export default function App() {
+  // Suppress CSS rules access errors (caused by browser extensions trying to read Google Fonts stylesheets)
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      if (event.message.includes('cssRules') || event.message.includes('CSSStyleSheet')) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
+    };
+    
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
   // Validate font pairings on mount (development only)
   useEffect(() => {
     const validation = validateFontPairings();
