@@ -1186,6 +1186,7 @@ export default function App() {
                       headerStyle={headerStyle}
                       bodyStyle={bodyStyle}
                       headerSize={headerSize}
+                      bodySize={bodySize}
                       textColor={textColor}
                       backgroundColor={backgroundColor}
                       buttonRadius={buttonRadius}

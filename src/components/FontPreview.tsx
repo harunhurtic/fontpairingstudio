@@ -350,7 +350,7 @@ export function FontPreview({
             title={isSaved ? 'Remove from saved pairings' : 'Save this pairing'}
           >
             <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
-            <span>{isSaved ? 'Saved' : 'Save Pairing'}</span>
+            <span>{isSaved ? 'Saved' : 'Save'}</span>
           </Button>
         </div>
       </div>
@@ -378,7 +378,7 @@ export function FontPreview({
             title="Swap header and body fonts"
           >
             <ArrowUpDown className="w-4 h-4" />
-            <span className="hidden sm:inline">Swap Fonts</span>
+            <span className="hidden lg:inline">Swap Fonts</span>
           </Button>
           <Button 
             onClick={onResetToDefaults} 
@@ -390,7 +390,7 @@ export function FontPreview({
             }}
           >
             <RotateCcw className="w-4 h-4" />
-            <span className="hidden sm:inline">Reset Default Text</span>
+            <span className="hidden lg:inline">Reset Default Text</span>
           </Button>
           <Button 
             onClick={toggleEditMode} 
@@ -408,12 +408,12 @@ export function FontPreview({
             {isEditMode ? (
               <>
                 <Check className="w-4 h-4" />
-                <span className="hidden sm:inline">Done Editing</span>
+                <span className="hidden lg:inline">Done Editing</span>
               </>
             ) : (
               <>
                 <Edit className="w-4 h-4" />
-                <span className="hidden sm:inline">Edit Text</span>
+                <span className="hidden lg:inline">Edit Text</span>
               </>
             )}
           </Button>
@@ -427,73 +427,88 @@ export function FontPreview({
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="mb-2">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onHeaderLockToggle();
-                      if (isHeaderLocked) {
-                        toast.success('Header font unlocked', {
-                          icon: (
-                            <div
-                              style={{
-                                backgroundColor: '#4d2487',
-                                borderRadius: '50%',
-                                width: '20px',
-                                height: '20px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Unlock className="w-3 h-3" style={{ color: 'white' }} />
-                            </div>
-                          ),
-                        });
-                      } else {
-                        toast.success('Header font locked', {
-                          icon: (
-                            <div
-                              style={{
-                                backgroundColor: '#4d2487',
-                                borderRadius: '50%',
-                                width: '20px',
-                                height: '20px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Lock className="w-3 h-3" style={{ color: 'white' }} />
-                            </div>
-                          ),
-                        });
-                      }
-                    }}
-                    className={`flex items-center gap-1 ${isHeaderLocked ? 'bg-muted' : ''}`}
-                    title={isHeaderLocked ? 'Unlock header font' : 'Lock header font'}
-                  >
-                    {isHeaderLocked ? (
-                      <Lock className="w-3 h-3" />
-                    ) : (
-                      <Unlock className="w-3 h-3" />
-                    )}
-                  </Button>
-                  <span 
-                    style={{
-                      fontFamily: bodyFontFamily,
-                      fontSize: '0.75rem',
-                      opacity: 0.6,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em'
-                    }}
-                  >
-                    Header Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
-                  </span>
-                </div>
-                <div className="mt-1">
+                <div className="flex flex-col md:flex-row md:items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onHeaderLockToggle();
+                        if (isHeaderLocked) {
+                          toast.success('Header font unlocked', {
+                            icon: (
+                              <div
+                                style={{
+                                  backgroundColor: '#4d2487',
+                                  borderRadius: '50%',
+                                  width: '20px',
+                                  height: '20px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                              </div>
+                            ),
+                          });
+                        } else {
+                          toast.success('Header font locked', {
+                            icon: (
+                              <div
+                                style={{
+                                  backgroundColor: '#4d2487',
+                                  borderRadius: '50%',
+                                  width: '20px',
+                                  height: '20px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                              </div>
+                            ),
+                          });
+                        }
+                      }}
+                      className={`flex items-center gap-1 ${isHeaderLocked ? 'bg-muted' : ''}`}
+                      title={isHeaderLocked ? 'Unlock header font' : 'Lock header font'}
+                    >
+                      {isHeaderLocked ? (
+                        <Lock className="w-3 h-3" />
+                      ) : (
+                        <Unlock className="w-3 h-3" />
+                      )}
+                    </Button>
+                    <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
+                      <span 
+                        style={{
+                          fontFamily: bodyFontFamily,
+                          fontSize: '0.75rem',
+                          opacity: 0.6,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em'
+                        }}
+                      >
+                        Header Text
+                      </span>
+                      {isEditMode && (
+                        <span 
+                          style={{
+                            fontFamily: bodyFontFamily,
+                            fontSize: '0.75rem',
+                            opacity: 0.6,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
+                          }}
+                        >
+                          ({isMobile ? 'Tap' : 'Click'} to edit)
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   {renderContrastBadge(textColor, backgroundColor, true)}
                 </div>
               </div>
@@ -556,73 +571,88 @@ export function FontPreview({
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="mb-2">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onBodyLockToggle();
-                      if (isBodyLocked) {
-                        toast.success('Body font unlocked', {
-                          icon: (
-                            <div
-                              style={{
-                                backgroundColor: '#4d2487',
-                                borderRadius: '50%',
-                                width: '20px',
-                                height: '20px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Unlock className="w-3 h-3" style={{ color: 'white' }} />
-                            </div>
-                          ),
-                        });
-                      } else {
-                        toast.success('Body font locked', {
-                          icon: (
-                            <div
-                              style={{
-                                backgroundColor: '#4d2487',
-                                borderRadius: '50%',
-                                width: '20px',
-                                height: '20px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Lock className="w-3 h-3" style={{ color: 'white' }} />
-                            </div>
-                          ),
-                        });
-                      }
-                    }}
-                    className={`flex items-center gap-1 ${isBodyLocked ? 'bg-muted' : ''}`}
-                    title={isBodyLocked ? 'Unlock body font' : 'Lock body font'}
-                  >
-                    {isBodyLocked ? (
-                      <Lock className="w-3 h-3" />
-                    ) : (
-                      <Unlock className="w-3 h-3" />
-                    )}
-                  </Button>
-                  <span 
-                    style={{
-                      fontFamily: bodyFontFamily,
-                      fontSize: '0.75rem',
-                      opacity: 0.6,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em'
-                    }}
-                  >
-                    Body Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
-                  </span>
-                </div>
-                <div className="mt-1">
+                <div className="flex flex-col md:flex-row md:items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onBodyLockToggle();
+                        if (isBodyLocked) {
+                          toast.success('Body font unlocked', {
+                            icon: (
+                              <div
+                                style={{
+                                  backgroundColor: '#4d2487',
+                                  borderRadius: '50%',
+                                  width: '20px',
+                                  height: '20px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                              </div>
+                            ),
+                          });
+                        } else {
+                          toast.success('Body font locked', {
+                            icon: (
+                              <div
+                                style={{
+                                  backgroundColor: '#4d2487',
+                                  borderRadius: '50%',
+                                  width: '20px',
+                                  height: '20px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                              </div>
+                            ),
+                          });
+                        }
+                      }}
+                      className={`flex items-center gap-1 ${isBodyLocked ? 'bg-muted' : ''}`}
+                      title={isBodyLocked ? 'Unlock body font' : 'Lock body font'}
+                    >
+                      {isBodyLocked ? (
+                        <Lock className="w-3 h-3" />
+                      ) : (
+                        <Unlock className="w-3 h-3" />
+                      )}
+                    </Button>
+                    <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
+                      <span 
+                        style={{
+                          fontFamily: bodyFontFamily,
+                          fontSize: '0.75rem',
+                          opacity: 0.6,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em'
+                        }}
+                      >
+                        Body Text
+                      </span>
+                      {isEditMode && (
+                        <span 
+                          style={{
+                            fontFamily: bodyFontFamily,
+                            fontSize: '0.75rem',
+                            opacity: 0.6,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
+                          }}
+                        >
+                          ({isMobile ? 'Tap' : 'Click'} to edit)
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   {renderContrastBadge(textColor, backgroundColor, false)}
                 </div>
               </div>
@@ -751,18 +781,33 @@ export function FontPreview({
           onClick={() => handleSectionClick('button')}
         >
           <div className="mb-2">
-            <span 
-              style={{
-                fontFamily: bodyFontFamily,
-                fontSize: '0.75rem',
-                opacity: 0.6,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
-              }}
-            >
-              Button {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
-            </span>
-            <div className="mt-1">
+            <div className="flex flex-col md:flex-row md:items-center gap-2">
+              <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
+                <span 
+                  style={{
+                    fontFamily: bodyFontFamily,
+                    fontSize: '0.75rem',
+                    opacity: 0.6,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}
+                >
+                  Button
+                </span>
+                {isEditMode && (
+                  <span 
+                    style={{
+                      fontFamily: bodyFontFamily,
+                      fontSize: '0.75rem',
+                      opacity: 0.6,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}
+                  >
+                    ({isMobile ? 'Tap' : 'Click'} to edit)
+                  </span>
+                )}
+              </div>
               {(() => {
                 if (buttonVariant === 'filled') {
                   // Filled button: check both text vs button bg AND button bg vs page bg

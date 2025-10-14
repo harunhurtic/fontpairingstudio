@@ -237,6 +237,7 @@ export function MobileControls({
                   headerStyle={headerStyle}
                   bodyStyle={bodyStyle}
                   headerSize={headerSize}
+                  bodySize={bodySize}
                   textColor={textColor}
                   backgroundColor={backgroundColor}
                   buttonRadius={buttonRadius}
