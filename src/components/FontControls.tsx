@@ -1,4 +1,4 @@
-import { Shuffle, ArrowLeftRight, Lock, Unlock, ChevronDown, ChevronUp, Type, Heart, ChevronsUpDown, Check } from 'lucide-react';
+import { Shuffle, ArrowUpDown, ArrowLeftRight, Lock, Unlock, ChevronDown, ChevronUp, Type, Heart, ChevronsUpDown, Check, RotateCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -30,7 +30,16 @@ interface FontControlsProps {
   bodySize: number;
   onHeaderSizeChange: (size: number) => void;
   onBodySizeChange: (size: number) => void;
+  headerLineHeight: number;
+  bodyLineHeight: number;
+  onHeaderLineHeightChange: (lineHeight: number) => void;
+  onBodyLineHeightChange: (lineHeight: number) => void;
+  headerLetterSpacing: number;
+  bodyLetterSpacing: number;
+  onHeaderLetterSpacingChange: (spacing: number) => void;
+  onBodyLetterSpacingChange: (spacing: number) => void;
   onSwapFonts: () => void;
+  onResetTypography: () => void;
   styleContrast: string;
   onStyleContrastChange: (contrast: string) => void;
   isHeaderLocked: boolean;
@@ -59,7 +68,16 @@ export function FontControls({
   bodySize,
   onHeaderSizeChange,
   onBodySizeChange,
+  headerLineHeight,
+  bodyLineHeight,
+  onHeaderLineHeightChange,
+  onBodyLineHeightChange,
+  headerLetterSpacing,
+  bodyLetterSpacing,
+  onHeaderLetterSpacingChange,
+  onBodyLetterSpacingChange,
   onSwapFonts,
+  onResetTypography,
   styleContrast,
   onStyleContrastChange,
   isHeaderLocked,
@@ -130,218 +148,282 @@ export function FontControls({
         </Button>
 
         {/* Font Selection */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <label>Font Selection</label>
           
-          {/* Header Font */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-3 items-start">
+            {/* Header Font */}
+            <div className="space-y-2 min-w-0">
               <label className="text-sm text-muted-foreground">Header Font</label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  onHeaderLockToggle();
-                  if (isHeaderLocked) {
-                    toast.success('Header font unlocked', {
-                      icon: (
-                        <div
-                          style={{
-                            backgroundColor: '#4d2487',
-                            borderRadius: '50%',
-                            width: '20px',
-                            height: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Unlock className="w-3 h-3" style={{ color: 'white' }} />
-                        </div>
-                      ),
-                    });
-                  } else {
-                    toast.success('Header font locked', {
-                      icon: (
-                        <div
-                          style={{
-                            backgroundColor: '#4d2487',
-                            borderRadius: '50%',
-                            width: '20px',
-                            height: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Lock className="w-3 h-3" style={{ color: 'white' }} />
-                        </div>
-                      ),
-                    });
-                  }
-                }}
-                className={`flex items-center gap-1 ${isHeaderLocked ? 'bg-muted' : ''}`}
-              >
-                {isHeaderLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-                {isHeaderLocked ? 'Locked' : 'Lock'}
-              </Button>
-            </div>
-            <Popover open={headerFontOpen} onOpenChange={setHeaderFontOpen}>
-              <PopoverTrigger asChild>
+              <div className="flex gap-2 min-w-0 items-center">
                 <Button
                   variant="outline"
-                  role="combobox"
-                  aria-expanded={headerFontOpen}
-                  className={cn("w-full justify-between", isHeaderLocked && "opacity-60")}
-                  disabled={isHeaderLocked}
-                  style={{ fontFamily: headerFont }}
+                  size="sm"
+                  onClick={() => {
+                    onHeaderLockToggle();
+                    if (isHeaderLocked) {
+                      toast.success('Header font unlocked', {
+                        icon: (
+                          <div
+                            style={{
+                              backgroundColor: '#4d2487',
+                              borderRadius: '50%',
+                              width: '20px',
+                              height: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                          </div>
+                        ),
+                      });
+                    } else {
+                      toast.success('Header font locked', {
+                        icon: (
+                          <div
+                            style={{
+                              backgroundColor: '#4d2487',
+                              borderRadius: '50%',
+                              width: '20px',
+                              height: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                          </div>
+                        ),
+                      });
+                    }
+                  }}
+                  className="shrink-0"
+                  style={isHeaderLocked ? {
+                    backgroundColor: '#4d2487',
+                    color: 'white'
+                  } : {}}
+                  title={isHeaderLocked ? 'Unlock header font' : 'Lock header font'}
                 >
-                  {headerFont}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  {isHeaderLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[min(300px,calc(100vw-3rem))] p-0" align="start">
-                <Command>
-                  <CommandInput placeholder="Search fonts..." />
-                  <CommandList className="max-h-[40vh]">
-                    <CommandEmpty>No font found.</CommandEmpty>
-                    <CommandGroup>
-                      {googleFonts.map((font) => (
-                        <CommandItem
-                          key={font.name}
-                          value={font.name}
-                          onSelect={(currentValue) => {
-                            onHeaderFontChange(currentValue);
-                            setHeaderFontOpen(false);
-                          }}
-                          style={{ fontFamily: font.name }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              headerFont === font.name ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                          {font.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
+                <Popover open={headerFontOpen} onOpenChange={setHeaderFontOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={headerFontOpen}
+                      className={cn("flex-1 justify-between min-w-0", isHeaderLocked && "opacity-60")}
+                      disabled={isHeaderLocked}
+                      style={{ fontFamily: headerFont }}
+                    >
+                      <span className="truncate">{headerFont}</span>
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[min(300px,calc(100vw-3rem))] p-0" align="start">
+                    <Command className="[&_[cmdk-list]]:max-h-[40vh] [&_[cmdk-list]]:overflow-y-auto [&_[cmdk-list]]:overscroll-contain">
+                      <CommandInput placeholder="Search fonts..." />
+                      <CommandList>
+                        <CommandEmpty>No font found.</CommandEmpty>
+                        <CommandGroup>
+                          {googleFonts.map((font) => (
+                            <CommandItem
+                              key={font.name}
+                              value={font.name}
+                              onSelect={(currentValue) => {
+                                onHeaderFontChange(currentValue);
+                                setHeaderFontOpen(false);
+                              }}
+                              style={{ fontFamily: font.name }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  headerFont === font.name ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {font.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
 
-          {/* Swap Button */}
-          <div className="flex justify-center">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={onSwapFonts}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeftRight className="w-3 h-3" />
-              Swap Fonts
-            </Button>
-          </div>
+            {/* Swap Button */}
+            <div className="flex items-center justify-center lg:pt-7">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={onSwapFonts}
+                className="flex items-center gap-2"
+                title="Swap header and body fonts"
+              >
+                <ArrowUpDown className="w-4 h-4 lg:hidden" />
+                <ArrowLeftRight className="w-4 h-4 hidden lg:block" />
+                <span className="lg:hidden">Swap Fonts</span>
+              </Button>
+            </div>
 
-          {/* Body Font */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
+            {/* Body Font */}
+            <div className="space-y-2 min-w-0">
               <label className="text-sm text-muted-foreground">Body Font</label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  onBodyLockToggle();
-                  if (isBodyLocked) {
-                    toast.success('Body font unlocked', {
-                      icon: (
-                        <div
-                          style={{
-                            backgroundColor: '#4d2487',
-                            borderRadius: '50%',
-                            width: '20px',
-                            height: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Unlock className="w-3 h-3" style={{ color: 'white' }} />
-                        </div>
-                      ),
-                    });
-                  } else {
-                    toast.success('Body font locked', {
-                      icon: (
-                        <div
-                          style={{
-                            backgroundColor: '#4d2487',
-                            borderRadius: '50%',
-                            width: '20px',
-                            height: '20px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Lock className="w-3 h-3" style={{ color: 'white' }} />
-                        </div>
-                      ),
-                    });
-                  }
-                }}
-                className={`flex items-center gap-1 ${isBodyLocked ? 'bg-muted' : ''}`}
-              >
-                {isBodyLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-                {isBodyLocked ? 'Locked' : 'Lock'}
-              </Button>
-            </div>
-            <Popover open={bodyFontOpen} onOpenChange={setBodyFontOpen}>
-              <PopoverTrigger asChild>
+              <div className="flex gap-2 min-w-0 items-center">
                 <Button
                   variant="outline"
-                  role="combobox"
-                  aria-expanded={bodyFontOpen}
-                  className={cn("w-full justify-between", isBodyLocked && "opacity-60")}
-                  disabled={isBodyLocked}
-                  style={{ fontFamily: bodyFont }}
+                  size="sm"
+                  onClick={() => {
+                    onBodyLockToggle();
+                    if (isBodyLocked) {
+                      toast.success('Body font unlocked', {
+                        icon: (
+                          <div
+                            style={{
+                              backgroundColor: '#4d2487',
+                              borderRadius: '50%',
+                              width: '20px',
+                              height: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                          </div>
+                        ),
+                      });
+                    } else {
+                      toast.success('Body font locked', {
+                        icon: (
+                          <div
+                            style={{
+                              backgroundColor: '#4d2487',
+                              borderRadius: '50%',
+                              width: '20px',
+                              height: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                          </div>
+                        ),
+                      });
+                    }
+                  }}
+                  className="shrink-0 lg:hidden"
+                  style={isBodyLocked ? {
+                    backgroundColor: '#4d2487',
+                    color: 'white'
+                  } : {}}
+                  title={isBodyLocked ? 'Unlock body font' : 'Lock body font'}
                 >
-                  {bodyFont}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  {isBodyLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[min(300px,calc(100vw-3rem))] p-0" align="start">
-                <Command>
-                  <CommandInput placeholder="Search fonts..." />
-                  <CommandList className="max-h-[40vh]">
-                    <CommandEmpty>No font found.</CommandEmpty>
-                    <CommandGroup>
-                      {googleFonts.map((font) => (
-                        <CommandItem
-                          key={font.name}
-                          value={font.name}
-                          onSelect={(currentValue) => {
-                            onBodyFontChange(currentValue);
-                            setBodyFontOpen(false);
-                          }}
-                          style={{ fontFamily: font.name }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              bodyFont === font.name ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                          {font.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
+                <Popover open={bodyFontOpen} onOpenChange={setBodyFontOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={bodyFontOpen}
+                      className={cn("flex-1 justify-between min-w-0", isBodyLocked && "opacity-60")}
+                      disabled={isBodyLocked}
+                      style={{ fontFamily: bodyFont }}
+                    >
+                      <span className="truncate">{bodyFont}</span>
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[min(300px,calc(100vw-3rem))] p-0" align="start">
+                    <Command className="[&_[cmdk-list]]:max-h-[40vh] [&_[cmdk-list]]:overflow-y-auto [&_[cmdk-list]]:overscroll-contain">
+                      <CommandInput placeholder="Search fonts..." />
+                      <CommandList>
+                        <CommandEmpty>No font found.</CommandEmpty>
+                        <CommandGroup>
+                          {googleFonts.map((font) => (
+                            <CommandItem
+                              key={font.name}
+                              value={font.name}
+                              onSelect={(currentValue) => {
+                                onBodyFontChange(currentValue);
+                                setBodyFontOpen(false);
+                              }}
+                              style={{ fontFamily: font.name }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  bodyFont === font.name ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {font.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    onBodyLockToggle();
+                    if (isBodyLocked) {
+                      toast.success('Body font unlocked', {
+                        icon: (
+                          <div
+                            style={{
+                              backgroundColor: '#4d2487',
+                              borderRadius: '50%',
+                              width: '20px',
+                              height: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                          </div>
+                        ),
+                      });
+                    } else {
+                      toast.success('Body font locked', {
+                        icon: (
+                          <div
+                            style={{
+                              backgroundColor: '#4d2487',
+                              borderRadius: '50%',
+                              width: '20px',
+                              height: '20px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                          </div>
+                        ),
+                      });
+                    }
+                  }}
+                  className="shrink-0 hidden lg:block"
+                  style={isBodyLocked ? {
+                    backgroundColor: '#4d2487',
+                    color: 'white'
+                  } : {}}
+                  title={isBodyLocked ? 'Unlock body font' : 'Lock body font'}
+                >
+                  {isBodyLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -433,30 +515,101 @@ export function FontControls({
           </div>
         </div>
 
-        {/* Size Controls */}
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label>Header Size: {headerSize}px</label>
-            <Slider
-              value={[headerSize]}
-              onValueChange={(value) => onHeaderSizeChange(value[0])}
-              min={24}
-              max={96}
-              step={1}
-              className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
-            />
+        {/* Typography Controls */}
+        <div className="space-y-6">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label>Size</label>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={onResetTypography}
+                className="flex items-center gap-2"
+              >
+                <RotateCcw className="w-3 h-3" />
+                Reset Size & Spacing
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Header: {headerSize}px</label>
+                <Slider
+                  value={[headerSize]}
+                  onValueChange={(value) => onHeaderSizeChange(value[0])}
+                  min={24}
+                  max={96}
+                  step={1}
+                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Body: {bodySize}px</label>
+                <Slider
+                  value={[bodySize]}
+                  onValueChange={(value) => onBodySizeChange(value[0])}
+                  min={12}
+                  max={24}
+                  step={1}
+                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label>Body Size: {bodySize}px</label>
-            <Slider
-              value={[bodySize]}
-              onValueChange={(value) => onBodySizeChange(value[0])}
-              min={12}
-              max={24}
-              step={1}
-              className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
-            />
+          <div>
+            <label className="block mb-3">Line Height</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Header: {headerLineHeight.toFixed(2)}</label>
+                <Slider
+                  value={[headerLineHeight]}
+                  onValueChange={(value) => onHeaderLineHeightChange(value[0])}
+                  min={0.8}
+                  max={2}
+                  step={0.05}
+                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Body: {bodyLineHeight.toFixed(2)}</label>
+                <Slider
+                  value={[bodyLineHeight]}
+                  onValueChange={(value) => onBodyLineHeightChange(value[0])}
+                  min={1}
+                  max={2.5}
+                  step={0.05}
+                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block mb-3">Letter Spacing</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Header: {(headerLetterSpacing * 1000).toFixed(0)} ({headerLetterSpacing >= 0 ? '+' : ''}{(headerLetterSpacing * 100).toFixed(1)}%)</label>
+                <Slider
+                  value={[headerLetterSpacing]}
+                  onValueChange={(value) => onHeaderLetterSpacingChange(value[0])}
+                  min={-0.05}
+                  max={0.2}
+                  step={0.005}
+                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Body: {(bodyLetterSpacing * 1000).toFixed(0)} ({bodyLetterSpacing >= 0 ? '+' : ''}{(bodyLetterSpacing * 100).toFixed(1)}%)</label>
+                <Slider
+                  value={[bodyLetterSpacing]}
+                  onValueChange={(value) => onBodyLetterSpacingChange(value[0])}
+                  min={-0.05}
+                  max={0.2}
+                  step={0.005}
+                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                />
+              </div>
+            </div>
           </div>
         </div>
     </div>

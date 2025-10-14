@@ -18,6 +18,10 @@ interface FontPreviewProps {
   bodyStyle: string;
   headerSize: number;
   bodySize: number;
+  headerLineHeight: number;
+  bodyLineHeight: number;
+  headerLetterSpacing: number;
+  bodyLetterSpacing: number;
   textColor: string;
   backgroundColor: string;
   headerText: string;
@@ -54,6 +58,10 @@ export function FontPreview({
   bodyStyle,
   headerSize,
   bodySize,
+  headerLineHeight,
+  bodyLineHeight,
+  headerLetterSpacing,
+  bodyLetterSpacing,
   textColor,
   backgroundColor,
   headerText,
@@ -262,96 +270,102 @@ export function FontPreview({
   return (
     <div className="space-y-4">
       {/* Control Bar */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3 flex-wrap">
-          <h2 className="text-xl font-semibold">Font Preview</h2>
-          <Select value={visualizationType} onValueChange={setVisualizationType}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Visualize as..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">
-                <div className="flex items-center gap-2">
-                  <LayoutGrid className="w-4 h-4" />
-                  <span>Default Preview</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="business-card">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="w-4 h-4" />
-                  <span>Business Card</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="website">
-                <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4" />
-                  <span>Website</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="slide-deck">
-                <div className="flex items-center gap-2">
-                  <Presentation className="w-4 h-4" />
-                  <span>Slide Deck</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="mobile-app">
-                <div className="flex items-center gap-2">
-                  <Smartphone className="w-4 h-4" />
-                  <span>Mobile App</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="book">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="w-4 h-4" />
-                  <span>Book Cover</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="billboard">
-                <div className="flex items-center gap-2">
-                  <Signpost className="w-4 h-4" />
-                  <span>Billboard</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="resume">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  <span>Resume</span>
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* Desktop: Generate + Save */}
-          <Button 
-            onClick={onRandomize} 
-            className="hidden xl:flex items-center gap-2 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-            style={{ backgroundColor: '#4d2487', borderColor: '#4d2487', color: 'white' }}
-          >
-            <Shuffle className="w-4 h-4" />
-            Generate Font Pairing
-          </Button>
-          <Button
-            variant={isSaved ? "default" : "outline"}
-            onClick={isSaved ? onUnsavePairing : onSavePairing}
-            className={`hidden xl:flex items-center gap-2 ${isSaved ? 'bg-[#b91c1c] hover:bg-[#991b1b] text-white dark:bg-white dark:text-black dark:hover:bg-gray-200' : ''}`}
-            title={isSaved ? 'Remove from saved pairings' : 'Save this pairing'}
-          >
-            <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
-            <span>{isSaved ? 'Font Pairing Saved' : 'Save Font Pairing'}</span>
-          </Button>
-          
-          {/* Mobile: Only Save */}
-          <Button
-            variant={isSaved ? "default" : "outline"}
-            size="sm"
-            onClick={isSaved ? onUnsavePairing : onSavePairing}
-            className={`xl:hidden flex items-center gap-2 whitespace-nowrap ${isSaved ? 'bg-[#b91c1c] hover:bg-[#991b1b] text-white dark:bg-white dark:text-black dark:hover:bg-gray-200' : ''}`}
-            title={isSaved ? 'Remove from saved pairings' : 'Save this pairing'}
-          >
-            <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
-            <span>{isSaved ? 'Saved' : 'Save'}</span>
-          </Button>
+      <div className="space-y-3 xl:space-y-0">
+        {/* Title on its own line on mobile */}
+        <h2 className="text-xl font-semibold xl:hidden">Font Preview</h2>
+        
+        {/* Desktop: Single line with title, dropdown, and buttons */}
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h2 className="text-xl font-semibold hidden xl:block">Font Preview</h2>
+            <Select value={visualizationType} onValueChange={setVisualizationType}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Visualize as..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">
+                  <div className="flex items-center gap-2">
+                    <LayoutGrid className="w-4 h-4" />
+                    <span>Default Preview</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="business-card">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    <span>Business Card</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="website">
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    <span>Website</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="slide-deck">
+                  <div className="flex items-center gap-2">
+                    <Presentation className="w-4 h-4" />
+                    <span>Slide Deck</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="mobile-app">
+                  <div className="flex items-center gap-2">
+                    <Smartphone className="w-4 h-4" />
+                    <span>Mobile App</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="book">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4" />
+                    <span>Book Cover</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="billboard">
+                  <div className="flex items-center gap-2">
+                    <Signpost className="w-4 h-4" />
+                    <span>Billboard</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="resume">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    <span>Resume</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Desktop: Generate + Save */}
+            <Button 
+              onClick={onRandomize} 
+              className="hidden xl:flex items-center gap-2 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              style={{ backgroundColor: '#4d2487', borderColor: '#4d2487', color: 'white' }}
+            >
+              <Shuffle className="w-4 h-4" />
+              Generate Font Pairing
+            </Button>
+            <Button
+              variant={isSaved ? "default" : "outline"}
+              onClick={isSaved ? onUnsavePairing : onSavePairing}
+              className={`hidden xl:flex items-center gap-2 ${isSaved ? 'bg-[#b91c1c] hover:bg-[#991b1b] text-white dark:bg-white dark:text-black dark:hover:bg-gray-200' : ''}`}
+              title={isSaved ? 'Remove from saved pairings' : 'Save this pairing'}
+            >
+              <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+              <span>{isSaved ? 'Font Pairing Saved' : 'Save Font Pairing'}</span>
+            </Button>
+            
+            {/* Mobile: Only Save */}
+            <Button
+              variant={isSaved ? "default" : "outline"}
+              size="sm"
+              onClick={isSaved ? onUnsavePairing : onSavePairing}
+              className={`xl:hidden flex items-center gap-2 whitespace-nowrap ${isSaved ? 'bg-[#b91c1c] hover:bg-[#991b1b] text-white dark:bg-white dark:text-black dark:hover:bg-gray-200' : ''}`}
+              title={isSaved ? 'Remove from saved pairings' : 'Save this pairing'}
+            >
+              <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+              <span>{isSaved ? 'Saved' : 'Save'}</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -473,7 +487,14 @@ export function FontPreview({
                           });
                         }
                       }}
-                      className={`flex items-center gap-1 ${isHeaderLocked ? 'bg-muted' : ''}`}
+                      className="flex items-center gap-1 bg-white dark:bg-background"
+                      style={isHeaderLocked ? {
+                        backgroundColor: '#4d2487',
+                        borderColor: textColor,
+                        color: 'white'
+                      } : {
+                        borderColor: textColor
+                      }}
                       title={isHeaderLocked ? 'Unlock header font' : 'Lock header font'}
                     >
                       {isHeaderLocked ? (
@@ -485,7 +506,6 @@ export function FontPreview({
                     <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
                       <span 
                         style={{
-                          fontFamily: bodyFontFamily,
                           fontSize: '0.75rem',
                           opacity: 0.6,
                           textTransform: 'uppercase',
@@ -497,7 +517,6 @@ export function FontPreview({
                       {isEditMode && (
                         <span 
                           style={{
-                            fontFamily: bodyFontFamily,
                             fontSize: '0.75rem',
                             opacity: 0.6,
                             textTransform: 'uppercase',
@@ -526,7 +545,8 @@ export function FontPreview({
                       fontWeight: headerWeight,
                       fontStyle: headerStyle,
                       fontSize: `${headerSize}px`,
-                      lineHeight: '1.2',
+                      lineHeight: headerLineHeight,
+                      letterSpacing: `${headerLetterSpacing}em`,
                       color: textColor
                     }}
                     autoFocus
@@ -539,7 +559,8 @@ export function FontPreview({
                     fontWeight: headerWeight,
                     fontStyle: headerStyle,
                     fontSize: `${headerSize}px`,
-                    lineHeight: '1.2',
+                    lineHeight: headerLineHeight,
+                    letterSpacing: `${headerLetterSpacing}em`,
                     marginBottom: '0.5rem'
                   }}
                 >
@@ -550,7 +571,6 @@ export function FontPreview({
               <div className="mt-2">
                 <p 
                   style={{
-                    fontFamily: bodyFontFamily,
                     fontSize: '0.75rem',
                     opacity: 0.6,
                     margin: 0
@@ -617,7 +637,14 @@ export function FontPreview({
                           });
                         }
                       }}
-                      className={`flex items-center gap-1 ${isBodyLocked ? 'bg-muted' : ''}`}
+                      className="flex items-center gap-1 bg-white dark:bg-background"
+                      style={isBodyLocked ? {
+                        backgroundColor: '#4d2487',
+                        borderColor: textColor,
+                        color: 'white'
+                      } : {
+                        borderColor: textColor
+                      }}
                       title={isBodyLocked ? 'Unlock body font' : 'Lock body font'}
                     >
                       {isBodyLocked ? (
@@ -629,7 +656,6 @@ export function FontPreview({
                     <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
                       <span 
                         style={{
-                          fontFamily: bodyFontFamily,
                           fontSize: '0.75rem',
                           opacity: 0.6,
                           textTransform: 'uppercase',
@@ -641,7 +667,6 @@ export function FontPreview({
                       {isEditMode && (
                         <span 
                           style={{
-                            fontFamily: bodyFontFamily,
                             fontSize: '0.75rem',
                             opacity: 0.6,
                             textTransform: 'uppercase',
@@ -670,7 +695,8 @@ export function FontPreview({
                       fontWeight: bodyWeight,
                       fontStyle: bodyStyle,
                       fontSize: `${bodySize}px`,
-                      lineHeight: '1.6',
+                      lineHeight: bodyLineHeight,
+                      letterSpacing: `${bodyLetterSpacing}em`,
                       color: textColor
                     }}
                     autoFocus
@@ -686,7 +712,8 @@ export function FontPreview({
                         fontWeight: bodyWeight,
                         fontStyle: bodyStyle,
                         fontSize: `${bodySize}px`,
-                        lineHeight: '1.6',
+                        lineHeight: bodyLineHeight,
+                        letterSpacing: `${bodyLetterSpacing}em`,
                         marginBottom: '0.5rem'
                       }}
                     >
@@ -699,7 +726,6 @@ export function FontPreview({
               <div className="mt-2">
                 <p 
                   style={{
-                    fontFamily: bodyFontFamily,
                     fontSize: '0.75rem',
                     opacity: 0.6,
                     margin: 0
@@ -723,7 +749,6 @@ export function FontPreview({
                 <div className="flex items-center gap-2 mb-2">
                   <span 
                     style={{
-                      fontFamily: bodyFontFamily,
                       fontSize: '0.75rem',
                       opacity: 0.6,
                       textTransform: 'uppercase',
@@ -743,11 +768,12 @@ export function FontPreview({
                       onChange={(e) => setTempQuoteText(e.target.value)}
                       className="border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                       style={{
-                        fontFamily: headerFontFamily,
-                        fontWeight: headerWeight,
+                        fontFamily: bodyFontFamily,
+                        fontWeight: bodyWeight,
                         fontStyle: 'italic',
-                        fontSize: '1.25rem',
-                        lineHeight: '1.5',
+                        fontSize: `${Math.round(bodySize * 1.25)}px`,
+                        lineHeight: bodyLineHeight,
+                        letterSpacing: `${bodyLetterSpacing}em`,
                         color: textColor
                       }}
                       autoFocus
@@ -756,11 +782,12 @@ export function FontPreview({
                 ) : (
                   <blockquote 
                     style={{
-                      fontFamily: headerFontFamily,
-                      fontWeight: headerWeight,
+                      fontFamily: bodyFontFamily,
+                      fontWeight: bodyWeight,
                       fontStyle: 'italic',
                       fontSize: `${Math.round(bodySize * 1.25)}px`,
-                      lineHeight: '1.5',
+                      lineHeight: bodyLineHeight,
+                      letterSpacing: `${bodyLetterSpacing}em`,
                       borderLeft: `4px solid ${textColor}`,
                       paddingLeft: '1rem',
                       marginBottom: '0',
@@ -785,7 +812,6 @@ export function FontPreview({
               <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
                 <span 
                   style={{
-                    fontFamily: bodyFontFamily,
                     fontSize: '0.75rem',
                     opacity: 0.6,
                     textTransform: 'uppercase',
@@ -797,7 +823,6 @@ export function FontPreview({
                 {isEditMode && (
                   <span 
                     style={{
-                      fontFamily: bodyFontFamily,
                       fontSize: '0.75rem',
                       opacity: 0.6,
                       textTransform: 'uppercase',
@@ -884,6 +909,7 @@ export function FontPreview({
               fontWeight: Math.max(bodyWeight + 100, 500),
               fontStyle: bodyStyle,
               fontSize: '0.875rem',
+              letterSpacing: `${bodyLetterSpacing}em`,
               color: buttonTextColor,
               backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
               borderColor: buttonVariant === 'outline' ? buttonBgColor : buttonVariant === 'ghost' ? 'transparent' : buttonBgColor
@@ -893,7 +919,7 @@ export function FontPreview({
           </button>
           
           {/* Font info under button */}
-          <div className="mt-3">
+          <div className="mt-2">
             <p 
               style={{
                 fontFamily: bodyFontFamily,
@@ -934,6 +960,7 @@ export function FontPreview({
                   fontWeight: headerWeight,
                   fontStyle: headerStyle,
                   fontSize: '24px',
+                  letterSpacing: `${headerLetterSpacing}em`,
                   marginBottom: '4px'
                 }}
               >
@@ -945,6 +972,7 @@ export function FontPreview({
                   fontWeight: bodyWeight,
                   fontStyle: bodyStyle,
                   fontSize: '14px',
+                  letterSpacing: `${bodyLetterSpacing}em`,
                   opacity: 0.8
                 }}
               >
@@ -982,7 +1010,8 @@ export function FontPreview({
                   fontFamily: headerFontFamily,
                   fontWeight: headerWeight,
                   fontStyle: headerStyle,
-                  fontSize: '28px'
+                  fontSize: '28px',
+                  letterSpacing: `${headerLetterSpacing}em`
                 }}
               >
                 {headerText.split(' ')[0] || 'Brand'}
@@ -1010,6 +1039,8 @@ export function FontPreview({
                 fontWeight: headerWeight,
                 fontStyle: headerStyle,
                 fontSize: `${headerSize}px`,
+                lineHeight: headerLineHeight,
+                letterSpacing: `${headerLetterSpacing}em`,
                 marginBottom: '16px'
               }}
             >
@@ -1021,7 +1052,8 @@ export function FontPreview({
                 fontWeight: bodyWeight,
                 fontStyle: bodyStyle,
                 fontSize: `${bodySize}px`,
-                lineHeight: 1.6,
+                lineHeight: bodyLineHeight,
+                letterSpacing: `${bodyLetterSpacing}em`,
                 marginBottom: '24px'
               }}
             >
@@ -1061,6 +1093,8 @@ export function FontPreview({
               fontWeight: headerWeight,
               fontStyle: headerStyle,
               fontSize: `${Math.max(headerSize * 1.5, 56)}px`,
+              lineHeight: headerLineHeight,
+              letterSpacing: `${headerLetterSpacing}em`,
               marginBottom: '24px'
             }}
           >
@@ -1073,7 +1107,8 @@ export function FontPreview({
               fontStyle: bodyStyle,
               fontSize: `${bodySize + 2}px`,
               maxWidth: '600px',
-              lineHeight: 1.6
+              lineHeight: bodyLineHeight,
+              letterSpacing: `${bodyLetterSpacing}em`
             }}
           >
             {bodyText.substring(0, 120)}...
@@ -1109,7 +1144,8 @@ export function FontPreview({
                   fontFamily: headerFontFamily,
                   fontWeight: headerWeight,
                   fontStyle: headerStyle,
-                  fontSize: '20px'
+                  fontSize: '20px',
+                  letterSpacing: `${headerLetterSpacing}em`
                 }}
               >
                 {headerText.split(' ')[0]}
@@ -1122,6 +1158,8 @@ export function FontPreview({
                 fontWeight: headerWeight,
                 fontStyle: headerStyle,
                 fontSize: `${headerSize * 0.8}px`,
+                lineHeight: headerLineHeight,
+                letterSpacing: `${headerLetterSpacing}em`,
                 marginBottom: '12px'
               }}
             >
@@ -1133,7 +1171,8 @@ export function FontPreview({
                 fontWeight: bodyWeight,
                 fontStyle: bodyStyle,
                 fontSize: `${bodySize}px`,
-                lineHeight: 1.6,
+                lineHeight: bodyLineHeight,
+                letterSpacing: `${bodyLetterSpacing}em`,
                 marginBottom: '24px'
               }}
             >
@@ -1187,7 +1226,8 @@ export function FontPreview({
               fontStyle: headerStyle,
               fontSize: `${Math.max(headerSize * 1.2, 48)}px`,
               marginBottom: '24px',
-              lineHeight: 1.2
+              lineHeight: headerLineHeight,
+              letterSpacing: `${headerLetterSpacing}em`
             }}
           >
             {headerText}
@@ -1200,6 +1240,8 @@ export function FontPreview({
               fontSize: `${bodySize}px`,
               marginBottom: '48px',
               fontStyle: 'italic',
+              lineHeight: bodyLineHeight,
+              letterSpacing: `${bodyLetterSpacing}em`,
               opacity: 0.8
             }}
           >
@@ -1236,7 +1278,8 @@ export function FontPreview({
               fontStyle: headerStyle,
               fontSize: `${Math.max(headerSize * 2, 72)}px`,
               marginBottom: '16px',
-              lineHeight: 1.1
+              lineHeight: headerLineHeight,
+              letterSpacing: `${headerLetterSpacing}em`
             }}
           >
             {headerText.split(' ').slice(0, 3).join(' ')}
@@ -1247,7 +1290,9 @@ export function FontPreview({
               fontWeight: bodyWeight,
               fontStyle: bodyStyle,
               fontSize: `${bodySize + 4}px`,
-              maxWidth: '600px'
+              maxWidth: '600px',
+              lineHeight: bodyLineHeight,
+              letterSpacing: `${bodyLetterSpacing}em`
             }}
           >
             {bodyText.split('.')[0]}
@@ -1269,6 +1314,8 @@ export function FontPreview({
                 fontWeight: headerWeight,
                 fontStyle: headerStyle,
                 fontSize: `${headerSize * 1.2}px`,
+                lineHeight: headerLineHeight,
+                letterSpacing: `${headerLetterSpacing}em`,
                 marginBottom: '8px'
               }}
             >
@@ -1280,6 +1327,7 @@ export function FontPreview({
                 fontWeight: bodyWeight,
                 fontStyle: bodyStyle,
                 fontSize: `${bodySize}px`,
+                letterSpacing: `${bodyLetterSpacing}em`,
                 opacity: 0.8
               }}
             >
@@ -1294,6 +1342,8 @@ export function FontPreview({
                 fontWeight: headerWeight,
                 fontStyle: headerStyle,
                 fontSize: `${headerSize * 0.6}px`,
+                lineHeight: headerLineHeight,
+                letterSpacing: `${headerLetterSpacing}em`,
                 marginBottom: '12px'
               }}
             >
@@ -1305,7 +1355,8 @@ export function FontPreview({
                 fontWeight: bodyWeight,
                 fontStyle: bodyStyle,
                 fontSize: `${bodySize}px`,
-                lineHeight: 1.6
+                lineHeight: bodyLineHeight,
+                letterSpacing: `${bodyLetterSpacing}em`
               }}
             >
               {bodyText}
@@ -1319,6 +1370,8 @@ export function FontPreview({
                 fontWeight: headerWeight,
                 fontStyle: headerStyle,
                 fontSize: `${headerSize * 0.6}px`,
+                lineHeight: headerLineHeight,
+                letterSpacing: `${headerLetterSpacing}em`,
                 marginBottom: '12px'
               }}
             >

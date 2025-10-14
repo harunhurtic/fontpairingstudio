@@ -28,6 +28,14 @@ interface MobileControlsProps {
   bodySize: number;
   onHeaderSizeChange: (size: number) => void;
   onBodySizeChange: (size: number) => void;
+  headerLineHeight: number;
+  bodyLineHeight: number;
+  onHeaderLineHeightChange: (lineHeight: number) => void;
+  onBodyLineHeightChange: (lineHeight: number) => void;
+  headerLetterSpacing: number;
+  bodyLetterSpacing: number;
+  onHeaderLetterSpacingChange: (letterSpacing: number) => void;
+  onBodyLetterSpacingChange: (letterSpacing: number) => void;
   buttonRadius: string;
   buttonVariant: string;
   onButtonRadiusChange: (radius: string) => void;
@@ -42,6 +50,7 @@ interface MobileControlsProps {
   onButtonTextColorChange: (color: string) => void;
   onRandomizeColors: () => void;
   onSwapFonts: () => void;
+  onResetTypography: () => void;
   styleContrast: string;
   onStyleContrastChange: (contrast: string) => void;
   isHeaderLocked: boolean;
@@ -75,6 +84,14 @@ export function MobileControls({
   bodySize,
   onHeaderSizeChange,
   onBodySizeChange,
+  headerLineHeight,
+  bodyLineHeight,
+  onHeaderLineHeightChange,
+  onBodyLineHeightChange,
+  headerLetterSpacing,
+  bodyLetterSpacing,
+  onHeaderLetterSpacingChange,
+  onBodyLetterSpacingChange,
   buttonRadius,
   buttonVariant,
   onButtonRadiusChange,
@@ -89,6 +106,7 @@ export function MobileControls({
   onButtonTextColorChange,
   onRandomizeColors,
   onSwapFonts,
+  onResetTypography,
   styleContrast,
   onStyleContrastChange,
   isHeaderLocked,
@@ -139,22 +157,21 @@ export function MobileControls({
             <Settings className="w-6 h-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="bottom" className="h-[90vh] overflow-y-auto px-6 pb-6">
-          <SheetHeader className="mb-6">
-            <SheetTitle className="flex items-center gap-2">
-              <Settings className="w-5 h-5" />
-              Controls
-            </SheetTitle>
-            <SheetDescription>
+        <SheetContent side="bottom" className="h-[90vh] flex flex-col px-6 pb-6">
+          <div className="pt-3 pb-2">
+            <div className="flex items-center justify-between mb-1">
+              <SheetTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                {getTabTitle()}
+              </SheetTitle>
+            </div>
+            <SheetDescription className="text-sm">
               Adjust font pairing, colors, and styling options
             </SheetDescription>
-          </SheetHeader>
-          <div>
-            <Tabs value={currentTab} className="w-full" onValueChange={setCurrentTab}>
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold">{getTabTitle()}</h3>
-              </div>
-              <TabsList className="grid w-full grid-cols-4 mb-8">
+          </div>
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <Tabs value={currentTab} className="w-full h-full flex flex-col" onValueChange={setCurrentTab}>
+              <TabsList className="grid w-full grid-cols-4 mb-8 flex-shrink-0">
                 <TabsTrigger value="fonts" className="flex items-center gap-2">
                   <Type className="w-4 h-4" />
                   <span className="hidden sm:inline">Fonts</span>
@@ -173,7 +190,7 @@ export function MobileControls({
                 </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="fonts" className="mt-0">
+              <TabsContent value="fonts" className="mt-0 flex-1 overflow-y-auto">
                 <FontControls
                   selectedStyle={selectedStyle}
                   onStyleChange={onStyleChange}
@@ -194,7 +211,16 @@ export function MobileControls({
                   bodySize={bodySize}
                   onHeaderSizeChange={onHeaderSizeChange}
                   onBodySizeChange={onBodySizeChange}
+                  headerLineHeight={headerLineHeight}
+                  bodyLineHeight={bodyLineHeight}
+                  onHeaderLineHeightChange={onHeaderLineHeightChange}
+                  onBodyLineHeightChange={onBodyLineHeightChange}
+                  headerLetterSpacing={headerLetterSpacing}
+                  bodyLetterSpacing={bodyLetterSpacing}
+                  onHeaderLetterSpacingChange={onHeaderLetterSpacingChange}
+                  onBodyLetterSpacingChange={onBodyLetterSpacingChange}
                   onSwapFonts={onSwapFonts}
+                  onResetTypography={onResetTypography}
                   styleContrast={styleContrast}
                   onStyleContrastChange={onStyleContrastChange}
                   isHeaderLocked={isHeaderLocked}
@@ -204,7 +230,7 @@ export function MobileControls({
                 />
               </TabsContent>
 
-              <TabsContent value="colors" className="mt-0">
+              <TabsContent value="colors" className="mt-0 flex-1 overflow-y-auto">
                 <ColorControls
                   textColor={textColor}
                   backgroundColor={backgroundColor}
@@ -219,7 +245,7 @@ export function MobileControls({
                 />
               </TabsContent>
 
-              <TabsContent value="buttons" className="mt-0">
+              <TabsContent value="buttons" className="mt-0 flex-1 overflow-y-auto">
                 <ButtonControls
                   buttonRadius={buttonRadius}
                   buttonVariant={buttonVariant}
@@ -228,7 +254,7 @@ export function MobileControls({
                 />
               </TabsContent>
 
-              <TabsContent value="code" className="mt-0">
+              <TabsContent value="code" className="mt-0 flex-1 overflow-y-auto">
                 <FontCode
                   headerFont={headerFont}
                   bodyFont={bodyFont}

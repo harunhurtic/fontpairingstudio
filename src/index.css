@@ -602,10 +602,6 @@
     margin-top: calc(var(--spacing) * 2);
   }
 
-  .mt-3 {
-    margin-top: calc(var(--spacing) * 3);
-  }
-
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
   }
@@ -700,6 +696,11 @@
     height: calc(var(--spacing) * 4);
   }
 
+  .size-5 {
+    width: calc(var(--spacing) * 5);
+    height: calc(var(--spacing) * 5);
+  }
+
   .size-9 {
     width: calc(var(--spacing) * 9);
     height: calc(var(--spacing) * 9);
@@ -769,16 +770,16 @@
     max-height: var(--radix-select-content-available-height);
   }
 
-  .max-h-\[40vh\] {
-    max-height: 40vh;
-  }
-
   .max-h-\[90vh\] {
     max-height: 90vh;
   }
 
   .max-h-\[300px\] {
     max-height: 300px;
+  }
+
+  .min-h-0 {
+    min-height: calc(var(--spacing) * 0);
   }
 
   .min-h-16 {
@@ -1053,6 +1054,12 @@
 
   .justify-self-end {
     justify-self: flex-end;
+  }
+
+  .truncate {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .overflow-hidden {
@@ -1387,6 +1394,10 @@
     padding-top: calc(var(--spacing) * 2);
   }
 
+  .pt-3 {
+    padding-top: calc(var(--spacing) * 3);
+  }
+
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
@@ -1401,6 +1412,10 @@
 
   .pr-8 {
     padding-right: calc(var(--spacing) * 8);
+  }
+
+  .pb-2 {
+    padding-bottom: calc(var(--spacing) * 2);
   }
 
   .pb-3 {
@@ -2341,6 +2356,18 @@
   }
 
   @media (width >= 64rem) {
+    .lg\:block {
+      display: block;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .lg\:hidden {
+      display: none;
+    }
+  }
+
+  @media (width >= 64rem) {
     .lg\:inline {
       display: inline;
     }
@@ -2349,6 +2376,18 @@
   @media (width >= 64rem) {
     .lg\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (width >= 64rem) {
+    .lg\:grid-cols-\[1fr_auto_1fr\] {
+      grid-template-columns: 1fr auto 1fr;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .lg\:pt-7 {
+      padding-top: calc(var(--spacing) * 7);
     }
   }
 
@@ -2379,6 +2418,14 @@
   @media (width >= 80rem) {
     .xl\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (width >= 80rem) {
+    :where(.xl\:space-y-0 > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 0) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 0) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
 
@@ -2574,6 +2621,18 @@
 
   .\[\&_\[cmdk-item\]_svg\]\:w-5 [cmdk-item] svg {
     width: calc(var(--spacing) * 5);
+  }
+
+  .\[\&_\[cmdk-list\]\]\:max-h-\[40vh\] [cmdk-list] {
+    max-height: 40vh;
+  }
+
+  .\[\&_\[cmdk-list\]\]\:overflow-y-auto [cmdk-list] {
+    overflow-y: auto;
+  }
+
+  .\[\&_\[cmdk-list\]\]\:overscroll-contain [cmdk-list] {
+    overscroll-behavior: contain;
   }
 
   .\[\&_\[role\=slider\]\]\:border-\[\#4d2487\] [role="slider"] {

@@ -108,6 +108,11 @@ export default function App() {
   );
   const [headerSize, setHeaderSize] = useState(40); // Size in pixels
   const [bodySize, setBodySize] = useState(16); // Size in pixels
+  const [headerLineHeight, setHeaderLineHeight] = useState(1.2);
+  const [bodyLineHeight, setBodyLineHeight] = useState(1.6);
+  const [headerLetterSpacing, setHeaderLetterSpacing] =
+    useState(0); // em
+  const [bodyLetterSpacing, setBodyLetterSpacing] = useState(0); // em
 
   // Custom text content
   const defaultTexts = {
@@ -622,6 +627,49 @@ export default function App() {
     // Note: Style contrast changes will be applied when "Generate Font Pairing" is clicked
   };
 
+  const handleResetTypography = () => {
+    setHeaderSize(40);
+    setBodySize(16);
+    setHeaderLineHeight(1.2);
+    setBodyLineHeight(1.6);
+    setHeaderLetterSpacing(0);
+    setBodyLetterSpacing(0);
+    toast.success(
+      "Font Size, Height and Spacing reset to default",
+      {
+        icon: (
+          <div
+            style={{
+              backgroundColor: "#4d2487",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 6L5 9L10 3"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        ),
+      },
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Toaster />
@@ -713,7 +761,7 @@ export default function App() {
                         <span className="text-[#4d2487] dark:text-white">
                           ✓
                         </span>
-                        <span>13 Style Categories</span>
+                        <span>12 Style Categories</span>
                       </div>
                       <div className="flex gap-2">
                         <span className="text-[#4d2487] dark:text-white">
@@ -876,6 +924,10 @@ export default function App() {
               bodyStyle={bodyStyle}
               headerSize={headerSize}
               bodySize={bodySize}
+              headerLineHeight={headerLineHeight}
+              bodyLineHeight={bodyLineHeight}
+              headerLetterSpacing={headerLetterSpacing}
+              bodyLetterSpacing={bodyLetterSpacing}
               textColor={textColor}
               backgroundColor={backgroundColor}
               headerText={headerText}
@@ -1134,7 +1186,22 @@ export default function App() {
                       bodySize={bodySize}
                       onHeaderSizeChange={setHeaderSize}
                       onBodySizeChange={setBodySize}
+                      headerLineHeight={headerLineHeight}
+                      bodyLineHeight={bodyLineHeight}
+                      onHeaderLineHeightChange={
+                        setHeaderLineHeight
+                      }
+                      onBodyLineHeightChange={setBodyLineHeight}
+                      headerLetterSpacing={headerLetterSpacing}
+                      bodyLetterSpacing={bodyLetterSpacing}
+                      onHeaderLetterSpacingChange={
+                        setHeaderLetterSpacing
+                      }
+                      onBodyLetterSpacingChange={
+                        setBodyLetterSpacing
+                      }
                       onSwapFonts={handleSwapFonts}
+                      onResetTypography={handleResetTypography}
                       styleContrast={styleContrast}
                       onStyleContrastChange={
                         handleStyleContrastChange
@@ -1251,6 +1318,14 @@ export default function App() {
         bodySize={bodySize}
         onHeaderSizeChange={setHeaderSize}
         onBodySizeChange={setBodySize}
+        headerLineHeight={headerLineHeight}
+        bodyLineHeight={bodyLineHeight}
+        onHeaderLineHeightChange={setHeaderLineHeight}
+        onBodyLineHeightChange={setBodyLineHeight}
+        headerLetterSpacing={headerLetterSpacing}
+        bodyLetterSpacing={bodyLetterSpacing}
+        onHeaderLetterSpacingChange={setHeaderLetterSpacing}
+        onBodyLetterSpacingChange={setBodyLetterSpacing}
         buttonRadius={buttonRadius}
         buttonVariant={buttonVariant}
         onButtonRadiusChange={setButtonRadius}
@@ -1265,6 +1340,7 @@ export default function App() {
         onButtonTextColorChange={setButtonTextColor}
         onRandomizeColors={handleRandomizeColors}
         onSwapFonts={handleSwapFonts}
+        onResetTypography={handleResetTypography}
         styleContrast={styleContrast}
         onStyleContrastChange={handleStyleContrastChange}
         isHeaderLocked={isHeaderLocked}

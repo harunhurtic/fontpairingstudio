@@ -13,8 +13,8 @@ export function QuickActions({
   onRandomizeFonts
 }: QuickActionsProps) {
   return (
-    <div className="xl:hidden bg-muted/20 p-4 rounded-lg mb-6">
-      <h4 className="font-medium mb-3 text-center">Quick Actions</h4>
+    <div className="xl:hidden bg-muted/20 p-4 rounded-lg mb-4">
+      <h4 className="font-medium mb-2 text-center">Quick Actions</h4>
       <div className="flex gap-2 flex-wrap">
         {onRandomizeFonts && (
           <Button 
