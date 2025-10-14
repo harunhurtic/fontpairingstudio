@@ -46,7 +46,10 @@ import {
   fontPairings,
   validateFontPairings,
 } from "./utils/fonts";
-import { generateAccessibleColorPair, checkContrast } from "./utils/contrast";
+import {
+  generateAccessibleColorPair,
+  checkContrast,
+} from "./utils/contrast";
 
 export default function App() {
   // Validate font pairings on mount (development only)
@@ -206,7 +209,10 @@ export default function App() {
       setBackgroundColor("#1a1a1a");
       setButtonBgColor("#f5f5f5");
       // For outline/ghost buttons, use text color; for filled, use contrasting color
-      if (buttonVariant === 'outline' || buttonVariant === 'ghost') {
+      if (
+        buttonVariant === "outline" ||
+        buttonVariant === "ghost"
+      ) {
         setButtonTextColor("#f5f5f5"); // Same as text color
       } else {
         setButtonTextColor("#1a1a1a");
@@ -217,7 +223,10 @@ export default function App() {
       setBackgroundColor("#ffffff");
       setButtonBgColor("#1a1a1a");
       // For outline/ghost buttons, use text color; for filled, use contrasting color
-      if (buttonVariant === 'outline' || buttonVariant === 'ghost') {
+      if (
+        buttonVariant === "outline" ||
+        buttonVariant === "ghost"
+      ) {
         setButtonTextColor("#1a1a1a"); // Same as text color
       } else {
         setButtonTextColor("#ffffff");
@@ -227,7 +236,10 @@ export default function App() {
 
   // Automatically adjust button text color when variant changes (without resetting background)
   useEffect(() => {
-    if (buttonVariant === 'ghost' || buttonVariant === 'outline') {
+    if (
+      buttonVariant === "ghost" ||
+      buttonVariant === "outline"
+    ) {
       // For outline/ghost buttons, use the page text color
       setButtonTextColor(textColor);
     } else {
@@ -355,7 +367,10 @@ export default function App() {
     // Make button background the same as text color
     setButtonBgColor(newTextColor);
     // For outline/ghost buttons, use text color; for filled, use contrasting color
-    if (buttonVariant === 'outline' || buttonVariant === 'ghost') {
+    if (
+      buttonVariant === "outline" ||
+      buttonVariant === "ghost"
+    ) {
       setButtonTextColor(newTextColor); // Same as text color
     } else {
       setButtonTextColor(newBackgroundColor); // Contrasting color
@@ -653,9 +668,9 @@ export default function App() {
                       About
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Easily discover beautiful, accessible font
-                      combinations using Google Fonts. With{" "}
-                      {googleFonts.length} fonts and{" "}
+                      Easily visualize and discover beautiful,
+                      accessible font combinations using Google
+                      Fonts. With {googleFonts.length} fonts and{" "}
                       {fontPairings.length} curated pairings
                       based on both professional recommendations
                       and typography principles, find the
