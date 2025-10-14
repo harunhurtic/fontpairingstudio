@@ -10,7 +10,7 @@
   191 Google Fonts, 
   91 Curated Pairings, 
   Low/Medium/High Style Contrast, 
-  13 Style Categories, 
+  12 Style Categories, 
   WCAG 2.1 AA/AAA Checking, 
   Inline Text Editing, 
   Header & Body Size Controls, 

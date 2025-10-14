@@ -254,19 +254,18 @@ export const googleFonts: GoogleFont[] = [
 ];
 
 export const styles = [
-  'modern',
-  'classic',
-  'friendly',
-  'professional',
-  'minimal',
-  'playful',
   'bold',
-  'elegant',
-  'readable',
-  'editorial',
-  'impactful',
+  'classic',
   'clean',
-  'creative'
+  'creative',
+  'editorial',
+  'elegant',
+  'friendly',
+  'impactful',
+  'minimal',
+  'modern',
+  'professional',
+  'readable'
 ];
 
 // For backwards compatibility
@@ -991,7 +990,7 @@ export const fontPairings: FontPair[] = [
   },
   
   { 
-    header: 'Lilita One', body: 'Quicksand', category: 'playful',
+    header: 'Lilita One', body: 'Quicksand', category: 'creative',
     justification: 'Lilita One is a bold, friendly display font with rounded character. Quicksand provides gentle, approachable body text. This pairing creates cheerful, welcoming interfaces perfect for family brands, children\'s content, and any design prioritizing warmth and approachability.',
     bestUsedFor: ['Family brands', 'Children\'s products', 'Fun content', 'Playful brands', 'Kids\' services', 'Cheerful platforms'],
     headerWeight: { low: 400, medium: 400, high: 400 },

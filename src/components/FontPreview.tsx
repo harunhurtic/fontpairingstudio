@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Edit, Check, RotateCcw, Shuffle, Heart } from 'lucide-react';
+import { Edit, Check, RotateCcw, Shuffle, Heart, ArrowUpDown, Lock, Unlock } from 'lucide-react';
 import { loadGoogleFont, getFontData } from '../utils/fonts';
 import { checkContrast } from '../utils/contrast';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
+import { toast } from 'sonner@2.0.3';
 
 interface FontPreviewProps {
   headerFont: string;
@@ -35,6 +36,11 @@ interface FontPreviewProps {
   onRandomize: () => void;
   onSavePairing: () => void;
   isSaved: boolean;
+  onSwapFonts: () => void;
+  isHeaderLocked: boolean;
+  isBodyLocked: boolean;
+  onHeaderLockToggle: () => void;
+  onBodyLockToggle: () => void;
   onUnsavePairing: () => void;
 }
 
@@ -66,6 +72,11 @@ export function FontPreview({
   onRandomize,
   onSavePairing,
   isSaved,
+  onSwapFonts,
+  isHeaderLocked,
+  isBodyLocked,
+  onHeaderLockToggle,
+  onBodyLockToggle,
   onUnsavePairing
 }: FontPreviewProps) {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -297,6 +308,31 @@ export function FontPreview({
         {/* Action Buttons - Top Right inside preview */}
         <div className="absolute top-4 right-4 z-10 flex gap-2 flex-wrap justify-end">
           <Button 
+            onClick={onSwapFonts} 
+            variant="outline" 
+            size="sm"
+            className="flex items-center gap-2 bg-white dark:bg-background"
+            style={{
+              borderColor: textColor
+            }}
+            title="Swap header and body fonts"
+          >
+            <ArrowUpDown className="w-4 h-4" />
+            <span className="hidden sm:inline">Swap Fonts</span>
+          </Button>
+          <Button 
+            onClick={onResetToDefaults} 
+            variant="outline" 
+            size="sm"
+            className="flex items-center gap-2 bg-white dark:bg-background"
+            style={{
+              borderColor: textColor
+            }}
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span className="hidden sm:inline">Reset Default Text</span>
+          </Button>
+          <Button 
             onClick={toggleEditMode} 
             variant={isEditMode ? "default" : "outline"}
             size="sm"
@@ -321,18 +357,6 @@ export function FontPreview({
               </>
             )}
           </Button>
-          <Button 
-            onClick={onResetToDefaults} 
-            variant="outline" 
-            size="sm"
-            className="flex items-center gap-2 bg-white dark:bg-background"
-            style={{
-              borderColor: textColor
-            }}
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span className="hidden sm:inline">Reset Default Text</span>
-          </Button>
         </div>
 
         {/* Header Section */}
@@ -343,17 +367,72 @@ export function FontPreview({
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="mb-2">
-                <span 
-                  style={{
-                    fontFamily: bodyFontFamily,
-                    fontSize: '0.75rem',
-                    opacity: 0.6,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em'
-                  }}
-                >
-                  Header Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
-                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onHeaderLockToggle();
+                      if (isHeaderLocked) {
+                        toast.success('Header font unlocked', {
+                          icon: (
+                            <div
+                              style={{
+                                backgroundColor: '#4d2487',
+                                borderRadius: '50%',
+                                width: '20px',
+                                height: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                            </div>
+                          ),
+                        });
+                      } else {
+                        toast.success('Header font locked', {
+                          icon: (
+                            <div
+                              style={{
+                                backgroundColor: '#4d2487',
+                                borderRadius: '50%',
+                                width: '20px',
+                                height: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                            </div>
+                          ),
+                        });
+                      }
+                    }}
+                    className={`flex items-center gap-1 ${isHeaderLocked ? 'bg-muted' : ''}`}
+                    title={isHeaderLocked ? 'Unlock header font' : 'Lock header font'}
+                  >
+                    {isHeaderLocked ? (
+                      <Lock className="w-3 h-3" />
+                    ) : (
+                      <Unlock className="w-3 h-3" />
+                    )}
+                  </Button>
+                  <span 
+                    style={{
+                      fontFamily: bodyFontFamily,
+                      fontSize: '0.75rem',
+                      opacity: 0.6,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}
+                  >
+                    Header Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
+                  </span>
+                </div>
                 <div className="mt-1">
                   {renderContrastBadge(textColor, backgroundColor, true)}
                 </div>
@@ -417,17 +496,72 @@ export function FontPreview({
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="mb-2">
-                <span 
-                  style={{
-                    fontFamily: bodyFontFamily,
-                    fontSize: '0.75rem',
-                    opacity: 0.6,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em'
-                  }}
-                >
-                  Body Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
-                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onBodyLockToggle();
+                      if (isBodyLocked) {
+                        toast.success('Body font unlocked', {
+                          icon: (
+                            <div
+                              style={{
+                                backgroundColor: '#4d2487',
+                                borderRadius: '50%',
+                                width: '20px',
+                                height: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                            </div>
+                          ),
+                        });
+                      } else {
+                        toast.success('Body font locked', {
+                          icon: (
+                            <div
+                              style={{
+                                backgroundColor: '#4d2487',
+                                borderRadius: '50%',
+                                width: '20px',
+                                height: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                            </div>
+                          ),
+                        });
+                      }
+                    }}
+                    className={`flex items-center gap-1 ${isBodyLocked ? 'bg-muted' : ''}`}
+                    title={isBodyLocked ? 'Unlock body font' : 'Lock body font'}
+                  >
+                    {isBodyLocked ? (
+                      <Lock className="w-3 h-3" />
+                    ) : (
+                      <Unlock className="w-3 h-3" />
+                    )}
+                  </Button>
+                  <span 
+                    style={{
+                      fontFamily: bodyFontFamily,
+                      fontSize: '0.75rem',
+                      opacity: 0.6,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}
+                  >
+                    Body Text {isEditMode && `(${isMobile ? 'Tap' : 'Click'} to edit)`}
+                  </span>
+                </div>
                 <div className="mt-1">
                   {renderContrastBadge(textColor, backgroundColor, false)}
                 </div>

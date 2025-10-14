@@ -882,6 +882,11 @@ export default function App() {
               onRandomize={handleRandomize}
               onSavePairing={handleSavePairing}
               isSaved={isSaved}
+              onSwapFonts={handleSwapFonts}
+              isHeaderLocked={isHeaderLocked}
+              isBodyLocked={isBodyLocked}
+              onHeaderLockToggle={handleHeaderLockToggle}
+              onBodyLockToggle={handleBodyLockToggle}
               onUnsavePairing={() => {
                 try {
                   const stored = localStorage.getItem(

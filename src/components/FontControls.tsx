@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
 import { styles, googleFonts, getFontData, loadGoogleFont } from '../utils/fonts';
 import { cn } from './ui/utils';
+import { toast } from 'sonner@2.0.3';
 
 interface FontControlsProps {
   selectedStyle: string;
@@ -139,7 +140,46 @@ export function FontControls({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onHeaderLockToggle}
+                onClick={() => {
+                  onHeaderLockToggle();
+                  if (isHeaderLocked) {
+                    toast.success('Header font unlocked', {
+                      icon: (
+                        <div
+                          style={{
+                            backgroundColor: '#4d2487',
+                            borderRadius: '50%',
+                            width: '20px',
+                            height: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                        </div>
+                      ),
+                    });
+                  } else {
+                    toast.success('Header font locked', {
+                      icon: (
+                        <div
+                          style={{
+                            backgroundColor: '#4d2487',
+                            borderRadius: '50%',
+                            width: '20px',
+                            height: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                        </div>
+                      ),
+                    });
+                  }
+                }}
                 className={`flex items-center gap-1 ${isHeaderLocked ? 'bg-muted' : ''}`}
               >
                 {isHeaderLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
@@ -212,7 +252,46 @@ export function FontControls({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onBodyLockToggle}
+                onClick={() => {
+                  onBodyLockToggle();
+                  if (isBodyLocked) {
+                    toast.success('Body font unlocked', {
+                      icon: (
+                        <div
+                          style={{
+                            backgroundColor: '#4d2487',
+                            borderRadius: '50%',
+                            width: '20px',
+                            height: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Unlock className="w-3 h-3" style={{ color: 'white' }} />
+                        </div>
+                      ),
+                    });
+                  } else {
+                    toast.success('Body font locked', {
+                      icon: (
+                        <div
+                          style={{
+                            backgroundColor: '#4d2487',
+                            borderRadius: '50%',
+                            width: '20px',
+                            height: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Lock className="w-3 h-3" style={{ color: 'white' }} />
+                        </div>
+                      ),
+                    });
+                  }
+                }}
                 className={`flex items-center gap-1 ${isBodyLocked ? 'bg-muted' : ''}`}
               >
                 {isBodyLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
