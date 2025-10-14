@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Edit, Check, RotateCcw, Shuffle, Heart, ArrowUpDown, Lock, Unlock } from 'lucide-react';
+import { Edit, Check, RotateCcw, Shuffle, Heart, ArrowUpDown, Lock, Unlock, LayoutGrid, CreditCard, Globe, Presentation, Smartphone, BookOpen, Signpost, FileText, User } from 'lucide-react';
 import { loadGoogleFont, getFontData } from '../utils/fonts';
 import { checkContrast } from '../utils/contrast';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { toast } from 'sonner@2.0.3';
 
 interface FontPreviewProps {
@@ -82,6 +83,7 @@ export function FontPreview({
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [visualizationType, setVisualizationType] = useState<string>('default');
   
   // Temporary text states for editing
   const [tempHeaderText, setTempHeaderText] = useState(headerText);
@@ -260,8 +262,65 @@ export function FontPreview({
   return (
     <div className="space-y-4">
       {/* Control Bar */}
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold">Font Preview</h2>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
+          <h2 className="text-xl font-semibold">Font Preview</h2>
+          <Select value={visualizationType} onValueChange={setVisualizationType}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Visualize as..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">
+                <div className="flex items-center gap-2">
+                  <LayoutGrid className="w-4 h-4" />
+                  <span>Default Preview</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="business-card">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-4 h-4" />
+                  <span>Business Card</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="website">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4" />
+                  <span>Website</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="slide-deck">
+                <div className="flex items-center gap-2">
+                  <Presentation className="w-4 h-4" />
+                  <span>Slide Deck</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="mobile-app">
+                <div className="flex items-center gap-2">
+                  <Smartphone className="w-4 h-4" />
+                  <span>Mobile App</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="book">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  <span>Book Cover</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="billboard">
+                <div className="flex items-center gap-2">
+                  <Signpost className="w-4 h-4" />
+                  <span>Billboard</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="resume">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  <span>Resume</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="flex items-center gap-2">
           {/* Desktop: Generate + Save */}
           <Button 
@@ -297,6 +356,7 @@ export function FontPreview({
       </div>
 
       {/* Font Preview */}
+      {visualizationType === 'default' ? (
       <div 
         className="p-8 rounded-lg transition-colors duration-300 border border-border relative"
         style={{ 
@@ -804,6 +864,459 @@ export function FontPreview({
 
 
       </div>
+      ) : visualizationType === 'business-card' ? (
+        <div 
+          className="p-8 rounded-lg transition-colors duration-300 border border-border relative overflow-hidden bg-muted/20"
+          style={{ 
+            minHeight: '400px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <div 
+            className="w-full max-w-md aspect-[3.5/2] border-2 rounded-lg p-6 flex flex-col justify-between shadow-lg" 
+            style={{ 
+              backgroundColor,
+              color: textColor,
+              borderColor: textColor + '20'
+            }}
+          >
+            <div>
+              <h3 
+                style={{ 
+                  fontFamily: headerFontFamily,
+                  fontWeight: headerWeight,
+                  fontStyle: headerStyle,
+                  fontSize: '24px',
+                  marginBottom: '4px'
+                }}
+              >
+                {headerText.split(' ')[0] || 'Your Name'}
+              </h3>
+              <p 
+                style={{ 
+                  fontFamily: bodyFontFamily,
+                  fontWeight: bodyWeight,
+                  fontStyle: bodyStyle,
+                  fontSize: '14px',
+                  opacity: 0.8
+                }}
+              >
+                {bodyText.split('.')[0] || 'Professional Title'}
+              </p>
+            </div>
+            <div 
+              style={{ 
+                fontFamily: bodyFontFamily,
+                fontWeight: bodyWeight,
+                fontStyle: bodyStyle,
+                fontSize: '12px',
+                opacity: 0.7
+              }}
+            >
+              <p>email@example.com</p>
+              <p>+1 (555) 123-4567</p>
+              <p>website.com</p>
+            </div>
+          </div>
+        </div>
+      ) : visualizationType === 'website' ? (
+        <div 
+          className="rounded-lg transition-colors duration-300 border border-border relative overflow-hidden"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            minHeight: '500px'
+          }}
+        >
+          <div className="p-6 border-b border-current/10">
+            <div className="flex items-center justify-between">
+              <h1 
+                style={{ 
+                  fontFamily: headerFontFamily,
+                  fontWeight: headerWeight,
+                  fontStyle: headerStyle,
+                  fontSize: '28px'
+                }}
+              >
+                {headerText.split(' ')[0] || 'Brand'}
+              </h1>
+              <div 
+                className="flex gap-6"
+                style={{ 
+                  fontFamily: bodyFontFamily,
+                  fontWeight: bodyWeight,
+                  fontStyle: bodyStyle,
+                  fontSize: '14px'
+                }}
+              >
+                <span>Home</span>
+                <span>About</span>
+                <span>Services</span>
+                <span>Contact</span>
+              </div>
+            </div>
+          </div>
+          <div className="p-12">
+            <h2 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize}px`,
+                marginBottom: '16px'
+              }}
+            >
+              {headerText}
+            </h2>
+            <p 
+              style={{ 
+                fontFamily: bodyFontFamily,
+                fontWeight: bodyWeight,
+                fontStyle: bodyStyle,
+                fontSize: `${bodySize}px`,
+                lineHeight: 1.6,
+                marginBottom: '24px'
+              }}
+            >
+              {bodyText}
+            </p>
+            <button
+              className={getButtonClasses()}
+              style={{
+                fontFamily: bodyFontFamily,
+                fontWeight: bodyWeight,
+                backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
+                color: buttonVariant === 'filled' ? buttonTextColor : buttonBgColor,
+                borderColor: buttonBgColor
+              }}
+            >
+              {buttonText}
+            </button>
+          </div>
+        </div>
+      ) : visualizationType === 'slide-deck' ? (
+        <div 
+          className="p-12 rounded-lg transition-colors duration-300 border border-border relative"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            minHeight: '500px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center'
+          }}
+        >
+          <h1 
+            style={{ 
+              fontFamily: headerFontFamily,
+              fontWeight: headerWeight,
+              fontStyle: headerStyle,
+              fontSize: `${Math.max(headerSize * 1.5, 56)}px`,
+              marginBottom: '24px'
+            }}
+          >
+            {headerText}
+          </h1>
+          <p 
+            style={{ 
+              fontFamily: bodyFontFamily,
+              fontWeight: bodyWeight,
+              fontStyle: bodyStyle,
+              fontSize: `${bodySize + 2}px`,
+              maxWidth: '600px',
+              lineHeight: 1.6
+            }}
+          >
+            {bodyText.substring(0, 120)}...
+          </p>
+          <div 
+            className="absolute bottom-8 right-8"
+            style={{ 
+              fontFamily: bodyFontFamily,
+              fontSize: '14px',
+              opacity: 0.5
+            }}
+          >
+            01
+          </div>
+        </div>
+      ) : visualizationType === 'mobile-app' ? (
+        <div 
+          className="rounded-lg transition-colors duration-300 border border-border relative overflow-hidden mx-auto"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            maxWidth: '375px',
+            minHeight: '667px'
+          }}
+        >
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-8">
+              <div className="w-6 h-6 flex items-center justify-center">
+                <User className="w-5 h-5" style={{ color: textColor }} />
+              </div>
+              <h1 
+                style={{ 
+                  fontFamily: headerFontFamily,
+                  fontWeight: headerWeight,
+                  fontStyle: headerStyle,
+                  fontSize: '20px'
+                }}
+              >
+                {headerText.split(' ')[0]}
+              </h1>
+              <div className="w-6 h-6"></div>
+            </div>
+            <h2 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize * 0.8}px`,
+                marginBottom: '12px'
+              }}
+            >
+              {headerText}
+            </h2>
+            <p 
+              style={{ 
+                fontFamily: bodyFontFamily,
+                fontWeight: bodyWeight,
+                fontStyle: bodyStyle,
+                fontSize: `${bodySize}px`,
+                lineHeight: 1.6,
+                marginBottom: '24px'
+              }}
+            >
+              {bodyText}
+            </p>
+            <button
+              className={getButtonClasses()}
+              style={{
+                fontFamily: bodyFontFamily,
+                fontWeight: bodyWeight,
+                backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
+                color: buttonVariant === 'filled' ? buttonTextColor : buttonBgColor,
+                borderColor: buttonBgColor,
+                display: 'inline-block'
+              }}
+            >
+              {buttonText}
+            </button>
+          </div>
+        </div>
+      ) : visualizationType === 'book' ? (
+        <div 
+          className="rounded-lg transition-colors duration-300 border border-border relative overflow-hidden mx-auto"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            maxWidth: '400px',
+            minHeight: '600px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            padding: '48px'
+          }}
+        >
+          <div 
+            style={{ 
+              fontFamily: bodyFontFamily,
+              fontSize: '14px',
+              marginBottom: '32px',
+              opacity: 0.7
+            }}
+          >
+            {bodyText.split(' ').slice(0, 2).join(' ').toUpperCase()}
+          </div>
+          <h1 
+            style={{ 
+              fontFamily: headerFontFamily,
+              fontWeight: headerWeight,
+              fontStyle: headerStyle,
+              fontSize: `${Math.max(headerSize * 1.2, 48)}px`,
+              marginBottom: '24px',
+              lineHeight: 1.2
+            }}
+          >
+            {headerText}
+          </h1>
+          <p 
+            style={{ 
+              fontFamily: bodyFontFamily,
+              fontWeight: bodyWeight,
+              fontStyle: bodyStyle,
+              fontSize: `${bodySize}px`,
+              marginBottom: '48px',
+              fontStyle: 'italic',
+              opacity: 0.8
+            }}
+          >
+            {quoteText || bodyText.substring(0, 60)}
+          </p>
+          <div 
+            style={{ 
+              fontFamily: bodyFontFamily,
+              fontSize: '16px',
+              marginTop: 'auto'
+            }}
+          >
+            Author Name
+          </div>
+        </div>
+      ) : visualizationType === 'billboard' ? (
+        <div 
+          className="p-12 rounded-lg transition-colors duration-300 border border-border relative"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            minHeight: '400px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center'
+          }}
+        >
+          <h1 
+            style={{ 
+              fontFamily: headerFontFamily,
+              fontWeight: headerWeight,
+              fontStyle: headerStyle,
+              fontSize: `${Math.max(headerSize * 2, 72)}px`,
+              marginBottom: '16px',
+              lineHeight: 1.1
+            }}
+          >
+            {headerText.split(' ').slice(0, 3).join(' ')}
+          </h1>
+          <p 
+            style={{ 
+              fontFamily: bodyFontFamily,
+              fontWeight: bodyWeight,
+              fontStyle: bodyStyle,
+              fontSize: `${bodySize + 4}px`,
+              maxWidth: '600px'
+            }}
+          >
+            {bodyText.split('.')[0]}
+          </p>
+        </div>
+      ) : visualizationType === 'resume' ? (
+        <div 
+          className="p-8 rounded-lg transition-colors duration-300 border border-border relative"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            minHeight: '600px'
+          }}
+        >
+          <div className="mb-8 pb-4 border-b border-current/20">
+            <h1 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize * 1.2}px`,
+                marginBottom: '8px'
+              }}
+            >
+              {headerText.split(' ').slice(0, 2).join(' ') || 'Your Name'}
+            </h1>
+            <p 
+              style={{ 
+                fontFamily: bodyFontFamily,
+                fontWeight: bodyWeight,
+                fontStyle: bodyStyle,
+                fontSize: `${bodySize}px`,
+                opacity: 0.8
+              }}
+            >
+              email@example.com • +1 (555) 123-4567 • linkedin.com/in/yourname
+            </p>
+          </div>
+          
+          <div className="mb-6">
+            <h2 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize * 0.6}px`,
+                marginBottom: '12px'
+              }}
+            >
+              Professional Summary
+            </h2>
+            <p 
+              style={{ 
+                fontFamily: bodyFontFamily,
+                fontWeight: bodyWeight,
+                fontStyle: bodyStyle,
+                fontSize: `${bodySize}px`,
+                lineHeight: 1.6
+              }}
+            >
+              {bodyText}
+            </p>
+          </div>
+          
+          <div>
+            <h2 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize * 0.6}px`,
+                marginBottom: '12px'
+              }}
+            >
+              Experience
+            </h2>
+            <div className="mb-4">
+              <h3 
+                style={{ 
+                  fontFamily: bodyFontFamily,
+                  fontWeight: Math.min(bodyWeight + 200, 900),
+                  fontSize: `${bodySize + 2}px`,
+                  marginBottom: '4px'
+                }}
+              >
+                Job Title • Company Name
+              </h3>
+              <p 
+                style={{ 
+                  fontFamily: bodyFontFamily,
+                  fontWeight: bodyWeight,
+                  fontStyle: bodyStyle,
+                  fontSize: `${bodySize - 1}px`,
+                  opacity: 0.7,
+                  marginBottom: '8px'
+                }}
+              >
+                2020 - Present
+              </p>
+              <p 
+                style={{ 
+                  fontFamily: bodyFontFamily,
+                  fontWeight: bodyWeight,
+                  fontStyle: bodyStyle,
+                  fontSize: `${bodySize}px`,
+                  lineHeight: 1.6
+                }}
+              >
+                {bodyText.substring(0, 100)}...
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

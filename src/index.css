@@ -76,6 +76,7 @@
     --color-white: #fff;
     --spacing: .25rem;
     --container-sm: 24rem;
+    --container-md: 28rem;
     --container-lg: 32rem;
     --container-5xl: 64rem;
     --text-xs: .75rem;
@@ -503,12 +504,20 @@
     right: calc(var(--spacing) * 6);
   }
 
+  .right-8 {
+    right: calc(var(--spacing) * 8);
+  }
+
   .bottom-0 {
     bottom: calc(var(--spacing) * 0);
   }
 
   .bottom-6 {
     bottom: calc(var(--spacing) * 6);
+  }
+
+  .bottom-8 {
+    bottom: calc(var(--spacing) * 8);
   }
 
   .left-0 {
@@ -669,12 +678,20 @@
     display: none;
   }
 
+  .inline-block {
+    display: inline-block;
+  }
+
   .inline-flex {
     display: inline-flex;
   }
 
   .field-sizing-content {
     field-sizing: content;
+  }
+
+  .aspect-\[3\.5\/2\] {
+    aspect-ratio: 3.5 / 2;
   }
 
   .size-3\.5 {
@@ -816,6 +833,10 @@
     width: calc(var(--spacing) * 72);
   }
 
+  .w-\[180px\] {
+    width: 180px;
+  }
+
   .w-\[min\(300px\,calc\(100vw-3rem\)\)\] {
     width: min(300px, 100vw - 3rem);
   }
@@ -838,6 +859,10 @@
 
   .max-w-\[calc\(100\%-2rem\)\] {
     max-width: calc(100% - 2rem);
+  }
+
+  .max-w-md {
+    max-width: var(--container-md);
   }
 
   .min-w-0 {
@@ -980,6 +1005,10 @@
 
   .gap-4 {
     gap: calc(var(--spacing) * 4);
+  }
+
+  .gap-6 {
+    gap: calc(var(--spacing) * 6);
   }
 
   .gap-8 {
@@ -1128,6 +1157,26 @@
 
   .border-border {
     border-color: var(--border);
+  }
+
+  .border-current\/10 {
+    border-color: currentColor;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .border-current\/10 {
+      border-color: color-mix(in oklab, currentcolor 10%, transparent);
+    }
+  }
+
+  .border-current\/20 {
+    border-color: currentColor;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .border-current\/20 {
+      border-color: color-mix(in oklab, currentcolor 20%, transparent);
+    }
   }
 
   .border-foreground {
@@ -1280,6 +1329,10 @@
 
   .p-8 {
     padding: calc(var(--spacing) * 8);
+  }
+
+  .p-12 {
+    padding: calc(var(--spacing) * 12);
   }
 
   .p-\[3px\] {
