@@ -4,7 +4,7 @@
   Developed with 💜 for designers and developers who believe that beautiful, accessible typography should be easy to create and implement.
 
   # About
-  Easily visualize and discover beautiful, accessible font combinations using Google Fonts. With 191 fonts and 91 curated pairings based on both professional recommendations and typography principles, find the perfect typography fast and easy while ensuring WCAG 2.1 accessibility compliance.
+  Font Pairing Studio lets you quickly and easily visualize and discover perfect font combinations using Google Fonts. With 191 fonts and 91 curated pairings based on both professional recommendations and typography principles, find the perfect typography fast and easy while ensuring WCAG 2.1 accessibility compliance.
 
   # Features
   191 Google Fonts, 
@@ -20,7 +20,8 @@
   Accessible Color Picker, 
   Save Up to 20 Font Pairings, 
   Font Lock Feature, 
-  Dark Mode Support, 
+  Dark Mode Support,
+  Golden Ratio Preview,
   Export Code Snippets & Download Fonts, 
   Mobile-Optimized UI, 
   Pairing Info and Justifications 
