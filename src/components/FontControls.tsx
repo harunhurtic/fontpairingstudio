@@ -1,4 +1,4 @@
-import { Shuffle, ArrowUpDown, ArrowLeftRight, Lock, Unlock, ChevronDown, ChevronUp, Type, Heart, ChevronsUpDown, Check, RotateCcw } from 'lucide-react';
+import { Shuffle, ArrowUpDown, ArrowLeftRight, Lock, Unlock, ChevronDown, ChevronUp, Type, Heart, ChevronsUpDown, Check, RotateCcw, Info, Link2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -6,6 +6,8 @@ import { Slider } from './ui/slider';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
+import { Checkbox } from './ui/checkbox';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { styles, googleFonts, getFontData, loadGoogleFont } from '../utils/fonts';
 import { cn } from './ui/utils';
 import { toast } from 'sonner@2.0.3';
@@ -46,6 +48,9 @@ interface FontControlsProps {
   isBodyLocked: boolean;
   onHeaderLockToggle: () => void;
   onBodyLockToggle: () => void;
+  isEditMode?: boolean;
+  isGoldenRatioEnabled?: boolean;
+  onGoldenRatioToggle?: (enabled: boolean) => void;
 }
 
 export function FontControls({
@@ -83,7 +88,10 @@ export function FontControls({
   isHeaderLocked,
   isBodyLocked,
   onHeaderLockToggle,
-  onBodyLockToggle
+  onBodyLockToggle,
+  isEditMode,
+  isGoldenRatioEnabled,
+  onGoldenRatioToggle
 }: FontControlsProps) {
   const [isExpanded, setIsExpanded] = useState(true); // Expanded by default
   const [headerFontOpen, setHeaderFontOpen] = useState(false);
@@ -162,7 +170,7 @@ export function FontControls({
                   onClick={() => {
                     onHeaderLockToggle();
                     if (isHeaderLocked) {
-                      toast.success('Header font unlocked', {
+                      toast.success('Header Font Unlocked', {
                         icon: (
                           <div
                             style={{
@@ -180,7 +188,7 @@ export function FontControls({
                         ),
                       });
                     } else {
-                      toast.success('Header font locked', {
+                      toast.success('Header Font Locked', {
                         icon: (
                           <div
                             style={{
@@ -280,7 +288,7 @@ export function FontControls({
                   onClick={() => {
                     onBodyLockToggle();
                     if (isBodyLocked) {
-                      toast.success('Body font unlocked', {
+                      toast.success('Body Font Unlocked', {
                         icon: (
                           <div
                             style={{
@@ -298,7 +306,7 @@ export function FontControls({
                         ),
                       });
                     } else {
-                      toast.success('Body font locked', {
+                      toast.success('Body Font Locked', {
                         icon: (
                           <div
                             style={{
@@ -376,7 +384,7 @@ export function FontControls({
                   onClick={() => {
                     onBodyLockToggle();
                     if (isBodyLocked) {
-                      toast.success('Body font unlocked', {
+                      toast.success('Body Font Unlocked', {
                         icon: (
                           <div
                             style={{
@@ -394,7 +402,7 @@ export function FontControls({
                         ),
                       });
                     } else {
-                      toast.success('Body font locked', {
+                      toast.success('Body Font Locked', {
                         icon: (
                           <div
                             style={{
@@ -519,94 +527,191 @@ export function FontControls({
         <div className="space-y-6">
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label>Size</label>
+              <label className={isEditMode ? "opacity-50" : ""}>Font Size</label>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={onResetTypography}
                 className="flex items-center gap-2"
+                disabled={isEditMode}
               >
                 <RotateCcw className="w-3 h-3" />
                 Reset Size & Spacing
               </Button>
             </div>
+            {isEditMode && (
+              <p className="text-xs text-muted-foreground mb-2">
+                Font size controls are disabled during Edit Mode. Exit Edit Mode to adjust sizes.
+              </p>
+            )}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Header: {headerSize}px</label>
+                <label className={`text-sm text-muted-foreground ${isEditMode ? 'opacity-50' : ''}`}>Header: {headerSize}px</label>
                 <Slider
                   value={[headerSize]}
                   onValueChange={(value) => onHeaderSizeChange(value[0])}
-                  min={24}
-                  max={96}
+                  min={12}
+                  max={100}
                   step={1}
-                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                  className={`[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487] ${isEditMode ? 'opacity-50 pointer-events-none' : ''}`}
+                  disabled={isEditMode}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Body: {bodySize}px</label>
+                <label className={`text-sm text-muted-foreground ${isEditMode ? 'opacity-50' : ''}`}>Body: {bodySize}px</label>
                 <Slider
                   value={[bodySize]}
                   onValueChange={(value) => onBodySizeChange(value[0])}
                   min={12}
-                  max={24}
+                  max={100}
                   step={1}
-                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                  className={`[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487] ${isEditMode ? 'opacity-50 pointer-events-none' : ''}`}
+                  disabled={isEditMode}
                 />
               </div>
+            </div>
+            
+            {/* Golden Ratio */}
+            <div className="mt-3 p-3 border rounded-lg bg-muted/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="golden-ratio"
+                    checked={isGoldenRatioEnabled}
+                    onCheckedChange={(checked) => {
+                      onGoldenRatioToggle?.(checked as boolean);
+                      if (checked) {
+                        toast.success('Golden Ratio Enabled - Sizes Are Now Linked', {
+                          icon: (
+                            <div
+                              style={{
+                                backgroundColor: '#4d2487',
+                                borderRadius: '50%',
+                                width: '20px',
+                                height: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Link2 className="w-3 h-3" style={{ color: 'white' }} />
+                            </div>
+                          ),
+                        });
+                      } else {
+                        toast.success('Golden Ratio Disabled - Sizes Are Independent', {
+                          icon: (
+                            <div
+                              style={{
+                                backgroundColor: '#4d2487',
+                                borderRadius: '50%',
+                                width: '20px',
+                                height: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Link2 className="w-3 h-3" style={{ color: 'white' }} />
+                            </div>
+                          ),
+                        });
+                      }
+                    }}
+                    disabled={isEditMode}
+                    className="data-[state=checked]:bg-[#4d2487] data-[state=checked]:border-[#4d2487]"
+                  />
+                  <label
+                    htmlFor="golden-ratio"
+                    className={`text-sm font-medium flex items-center gap-2 cursor-pointer ${isEditMode ? 'opacity-50' : ''}`}
+                  >
+                    <Link2 className="w-4 h-4 text-[#4d2487]" />
+                    <span>Link sizes with Golden Ratio?</span>
+                  </label>
+                </div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Info className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-3">
+                      <h4 className="font-semibold">Typography & the Golden Ratio</h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        The golden ratio (1.618) helps create balanced, visually pleasing typography. To choose a header size, multiply your body text size by 1.618. For example, 12 pt body text × 1.618 ≈ 19–20 pt headers. To find body text from a header size, divide the header size by 1.618.
+                      </p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Even small adjustments using the golden ratio can greatly improve readability and visual flow, making your designs feel more natural and harmonious.
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {isGoldenRatioEnabled 
+                  ? "Adjusting one size will automatically update the other to maintain the 1.618 ratio."
+                  : "Enable this to link header and body sizes with the golden ratio (1.618). When enabled, the larger size is kept and the smaller one is calculated."}
+              </p>
             </div>
           </div>
 
           <div>
-            <label className="block mb-3">Line Height</label>
+            <label className={`block mb-3 ${isEditMode ? 'opacity-50' : ''}`}>Line Height</label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Header: {headerLineHeight.toFixed(2)}</label>
+                <label className={`text-sm text-muted-foreground ${isEditMode ? 'opacity-50' : ''}`}>Header: {headerLineHeight.toFixed(2)}</label>
                 <Slider
                   value={[headerLineHeight]}
                   onValueChange={(value) => onHeaderLineHeightChange(value[0])}
                   min={0.8}
                   max={2}
                   step={0.05}
-                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                  className={`[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487] ${isEditMode ? 'opacity-50 pointer-events-none' : ''}`}
+                  disabled={isEditMode}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Body: {bodyLineHeight.toFixed(2)}</label>
+                <label className={`text-sm text-muted-foreground ${isEditMode ? 'opacity-50' : ''}`}>Body: {bodyLineHeight.toFixed(2)}</label>
                 <Slider
                   value={[bodyLineHeight]}
                   onValueChange={(value) => onBodyLineHeightChange(value[0])}
                   min={1}
                   max={2.5}
                   step={0.05}
-                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                  className={`[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487] ${isEditMode ? 'opacity-50 pointer-events-none' : ''}`}
+                  disabled={isEditMode}
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block mb-3">Letter Spacing</label>
+            <label className={`block mb-3 ${isEditMode ? 'opacity-50' : ''}`}>Letter Spacing</label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Header: {(headerLetterSpacing * 1000).toFixed(0)} ({headerLetterSpacing >= 0 ? '+' : ''}{(headerLetterSpacing * 100).toFixed(1)}%)</label>
+                <label className={`text-sm text-muted-foreground ${isEditMode ? 'opacity-50' : ''}`}>Header: {(headerLetterSpacing * 1000).toFixed(0)} ({headerLetterSpacing >= 0 ? '+' : ''}{(headerLetterSpacing * 100).toFixed(1)}%)</label>
                 <Slider
                   value={[headerLetterSpacing]}
                   onValueChange={(value) => onHeaderLetterSpacingChange(value[0])}
                   min={-0.05}
                   max={0.2}
                   step={0.005}
-                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                  className={`[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487] ${isEditMode ? 'opacity-50 pointer-events-none' : ''}`}
+                  disabled={isEditMode}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Body: {(bodyLetterSpacing * 1000).toFixed(0)} ({bodyLetterSpacing >= 0 ? '+' : ''}{(bodyLetterSpacing * 100).toFixed(1)}%)</label>
+                <label className={`text-sm text-muted-foreground ${isEditMode ? 'opacity-50' : ''}`}>Body: {(bodyLetterSpacing * 1000).toFixed(0)} ({bodyLetterSpacing >= 0 ? '+' : ''}{(bodyLetterSpacing * 100).toFixed(1)}%)</label>
                 <Slider
                   value={[bodyLetterSpacing]}
                   onValueChange={(value) => onBodyLetterSpacingChange(value[0])}
                   min={-0.05}
                   max={0.2}
                   step={0.005}
-                  className="[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487]"
+                  className={`[&_[role=slider]]:bg-[#4d2487] [&_[role=slider]]:border-[#4d2487] ${isEditMode ? 'opacity-50 pointer-events-none' : ''}`}
+                  disabled={isEditMode}
                 />
               </div>
             </div>

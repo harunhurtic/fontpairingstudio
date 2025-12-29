@@ -61,7 +61,7 @@ export function SavedPairings({ onLoadPairing, isDarkMode, onPairingsChange, sav
       }
       
       // Show toast with undo action
-      toast.success('Font pairing removed!', {
+      toast.success('Font Pairing Removed!', {
         action: {
           label: 'Undo',
           onClick: () => {
@@ -75,7 +75,7 @@ export function SavedPairings({ onLoadPairing, isDarkMode, onPairingsChange, sav
                 if (onPairingsChange) {
                   onPairingsChange();
                 }
-                toast.success('Font pairing restored!', {
+                toast.success('Font Pairing Restored!', {
                   icon: (
                     <div style={{ 
                       backgroundColor: '#4d2487', 
@@ -106,7 +106,7 @@ export function SavedPairings({ onLoadPairing, isDarkMode, onPairingsChange, sav
                 });
               } catch (error) {
                 console.error('Error restoring pairing:', error);
-                toast.error('Failed to restore pairing');
+                toast.error('Failed To Restore Pairing');
               }
             }
           }
@@ -141,7 +141,7 @@ export function SavedPairings({ onLoadPairing, isDarkMode, onPairingsChange, sav
       });
     } catch (error) {
       console.error('Error deleting pairing:', error);
-      toast.error('Failed to remove font pairing');
+      toast.error('Failed To Remove Font Pairing');
     }
   };
 

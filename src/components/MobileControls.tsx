@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Settings, Type, Palette, RectangleHorizontal, Code, Download } from 'lucide-react';
+import { Settings, Type, Palette, RectangleHorizontal, Download } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from './ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { FontControls } from './FontControls';
+import { FontControlsTabbed } from './FontControlsTabbed';
 import { ButtonControls } from './ButtonControls';
-import { ColorControls } from './ColorControls';
+import { ColorControlsTabbed } from './ColorControlsTabbed';
 import { FontCode } from './FontCode';
 
 interface MobileControlsProps {
@@ -62,6 +62,9 @@ interface MobileControlsProps {
   shouldExpandFontCode?: boolean;
   onFontCodeExpandChange?: (expanded: boolean) => void;
   initialTab?: string;
+  isEditMode?: boolean;
+  isGoldenRatioEnabled?: boolean;
+  onGoldenRatioToggle?: (enabled: boolean) => void;
 }
 
 export function MobileControls({
@@ -117,7 +120,10 @@ export function MobileControls({
   onOpenChange,
   shouldExpandFontCode,
   onFontCodeExpandChange,
-  initialTab = "fonts"
+  initialTab = "fonts",
+  isEditMode,
+  isGoldenRatioEnabled,
+  onGoldenRatioToggle
 }: MobileControlsProps) {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [currentTab, setCurrentTab] = useState("fonts");
@@ -125,7 +131,7 @@ export function MobileControls({
   const setIsOpen = onOpenChange || setInternalIsOpen;
 
   // Sync currentTab with initialTab when it changes
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("initialTab changed to:", initialTab);
     setCurrentTab(initialTab);
   }, [initialTab]);
@@ -191,7 +197,7 @@ export function MobileControls({
               </TabsList>
               
               <TabsContent value="fonts" className="mt-0 flex-1 overflow-y-auto">
-                <FontControls
+                <FontControlsTabbed
                   selectedStyle={selectedStyle}
                   onStyleChange={onStyleChange}
                   onRandomize={onRandomize}
@@ -227,11 +233,14 @@ export function MobileControls({
                   isBodyLocked={isBodyLocked}
                   onHeaderLockToggle={onHeaderLockToggle}
                   onBodyLockToggle={onBodyLockToggle}
+                  isEditMode={isEditMode}
+                  isGoldenRatioEnabled={isGoldenRatioEnabled}
+                  onGoldenRatioToggle={onGoldenRatioToggle}
                 />
               </TabsContent>
 
               <TabsContent value="colors" className="mt-0 flex-1 overflow-y-auto">
-                <ColorControls
+                <ColorControlsTabbed
                   textColor={textColor}
                   backgroundColor={backgroundColor}
                   buttonBgColor={buttonBgColor}

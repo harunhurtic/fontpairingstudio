@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Edit, Check, RotateCcw, Shuffle, Heart, ArrowUpDown, Lock, Unlock, LayoutGrid, CreditCard, Globe, Presentation, Smartphone, BookOpen, Signpost, FileText, User } from 'lucide-react';
+import { Edit, Check, RotateCcw, Shuffle, Heart, ArrowUpDown, Lock, Unlock, LayoutGrid, CreditCard, Globe, Presentation, Smartphone, BookOpen, Signpost, FileText, User, LayoutDashboard, Newspaper, Home, Search, Bell, Settings } from 'lucide-react';
 import { loadGoogleFont, getFontData } from '../utils/fonts';
 import { checkContrast } from '../utils/contrast';
 import { Button } from './ui/button';
@@ -47,6 +47,7 @@ interface FontPreviewProps {
   onHeaderLockToggle: () => void;
   onBodyLockToggle: () => void;
   onUnsavePairing: () => void;
+  onEditModeChange?: (isEditMode: boolean) => void;
 }
 
 export function FontPreview({
@@ -86,7 +87,8 @@ export function FontPreview({
   isBodyLocked,
   onHeaderLockToggle,
   onBodyLockToggle,
-  onUnsavePairing
+  onUnsavePairing,
+  onEditModeChange
 }: FontPreviewProps) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingSection, setEditingSection] = useState<string | null>(null);
@@ -244,8 +246,10 @@ export function FontPreview({
       // Save current section when exiting edit mode
       handleSaveSection(editingSection);
     }
-    setIsEditMode(!isEditMode);
+    const newEditMode = !isEditMode;
+    setIsEditMode(newEditMode);
     setEditingSection(null);
+    onEditModeChange?.(newEditMode);
   };
 
   // Helper function to render contrast check badge
@@ -289,28 +293,46 @@ export function FontPreview({
                     <span>Default Preview</span>
                   </div>
                 </SelectItem>
-                <SelectItem value="business-card">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
-                    <span>Business Card</span>
-                  </div>
-                </SelectItem>
                 <SelectItem value="website">
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4" />
                     <span>Website</span>
                   </div>
                 </SelectItem>
-                <SelectItem value="slide-deck">
-                  <div className="flex items-center gap-2">
-                    <Presentation className="w-4 h-4" />
-                    <span>Slide Deck</span>
-                  </div>
-                </SelectItem>
                 <SelectItem value="mobile-app">
                   <div className="flex items-center gap-2">
                     <Smartphone className="w-4 h-4" />
                     <span>Mobile App</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="blog-post">
+                  <div className="flex items-center gap-2">
+                    <Newspaper className="w-4 h-4" />
+                    <span>Blog Post</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="dashboard">
+                  <div className="flex items-center gap-2">
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>Dashboard</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="resume">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    <span>Resume</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="business-card">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    <span>Business Card</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="slide-deck">
+                  <div className="flex items-center gap-2">
+                    <Presentation className="w-4 h-4" />
+                    <span>Slide Deck</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="book">
@@ -323,12 +345,6 @@ export function FontPreview({
                   <div className="flex items-center gap-2">
                     <Signpost className="w-4 h-4" />
                     <span>Billboard</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="resume">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    <span>Resume</span>
                   </div>
                 </SelectItem>
               </SelectContent>
@@ -435,7 +451,7 @@ export function FontPreview({
 
         {/* Header Section */}
         <div 
-          className={`relative group mb-6 ${isEditMode ? 'cursor-pointer' : ''}`}
+          className={`relative group mb-6 ${isEditMode && editingSection !== 'header' ? 'cursor-pointer' : ''}`}
           onClick={() => handleSectionClick('header')}
         >
           <div className="flex items-start justify-between">
@@ -450,7 +466,7 @@ export function FontPreview({
                         e.stopPropagation();
                         onHeaderLockToggle();
                         if (isHeaderLocked) {
-                          toast.success('Header font unlocked', {
+                          toast.success('Header Font Unlocked', {
                             icon: (
                               <div
                                 style={{
@@ -468,7 +484,7 @@ export function FontPreview({
                             ),
                           });
                         } else {
-                          toast.success('Header font locked', {
+                          toast.success('Header Font Locked', {
                             icon: (
                               <div
                                 style={{
@@ -544,13 +560,32 @@ export function FontPreview({
                       fontFamily: headerFontFamily,
                       fontWeight: headerWeight,
                       fontStyle: headerStyle,
-                      fontSize: `${headerSize}px`,
-                      lineHeight: headerLineHeight,
-                      letterSpacing: `${headerLetterSpacing}em`,
+                      fontSize: '48px',
+                      lineHeight: 1.2,
+                      letterSpacing: '0em',
                       color: textColor
                     }}
                     autoFocus
                   />
+                </div>
+              ) : isEditMode ? (
+                <div className="p-3 rounded-md border-2 border-dashed" style={{ 
+                  borderColor: textColor,
+                  backgroundColor: `${textColor}10`
+                }}>
+                  <h1 
+                    style={{
+                      fontFamily: headerFontFamily,
+                      fontWeight: headerWeight,
+                      fontStyle: headerStyle,
+                      fontSize: '48px',
+                      lineHeight: 1.2,
+                      letterSpacing: '0em',
+                      marginBottom: 0
+                    }}
+                  >
+                    {headerText}
+                  </h1>
                 </div>
               ) : (
                 <h1 
@@ -585,7 +620,7 @@ export function FontPreview({
         
         {/* Body Text Section */}
         <div 
-          className={`relative group mb-6 ${isEditMode ? 'cursor-pointer' : ''}`}
+          className={`relative group mb-6 ${isEditMode && editingSection !== 'body' ? 'cursor-pointer' : ''}`}
           onClick={() => handleSectionClick('body')}
         >
           <div className="flex items-start justify-between">
@@ -600,7 +635,7 @@ export function FontPreview({
                         e.stopPropagation();
                         onBodyLockToggle();
                         if (isBodyLocked) {
-                          toast.success('Body font unlocked', {
+                          toast.success('Body Font Unlocked', {
                             icon: (
                               <div
                                 style={{
@@ -618,7 +653,7 @@ export function FontPreview({
                             ),
                           });
                         } else {
-                          toast.success('Body font locked', {
+                          toast.success('Body Font Locked', {
                             icon: (
                               <div
                                 style={{
@@ -694,13 +729,35 @@ export function FontPreview({
                       fontFamily: bodyFontFamily,
                       fontWeight: bodyWeight,
                       fontStyle: bodyStyle,
-                      fontSize: `${bodySize}px`,
-                      lineHeight: bodyLineHeight,
-                      letterSpacing: `${bodyLetterSpacing}em`,
+                      fontSize: '16px',
+                      lineHeight: 1.5,
+                      letterSpacing: '0em',
                       color: textColor
                     }}
                     autoFocus
                   />
+                </div>
+              ) : isEditMode ? (
+                <div className="p-3 rounded-md border-2 border-dashed" style={{ 
+                  borderColor: textColor,
+                  backgroundColor: `${textColor}10`
+                }}>
+                  {bodyText.split('\\n\\n').map((paragraph, index) => (
+                    <p 
+                      key={index}
+                      style={{
+                        fontFamily: bodyFontFamily,
+                        fontWeight: bodyWeight,
+                        fontStyle: bodyStyle,
+                        fontSize: '16px',
+                        lineHeight: 1.5,
+                        letterSpacing: '0em',
+                        marginBottom: '0.5rem'
+                      }}
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
                 </div>
               ) : (
                 <>
@@ -741,7 +798,7 @@ export function FontPreview({
         {/* Quote Section */}
         {quoteText && (
           <div 
-            className={`relative group mb-6 ${isEditMode ? 'cursor-pointer' : ''}`}
+            className={`relative group mb-6 ${isEditMode && editingSection !== 'quote' ? 'cursor-pointer' : ''}`}
             onClick={() => handleSectionClick('quote')}
           >
             <div className="flex items-start justify-between">
@@ -771,13 +828,35 @@ export function FontPreview({
                         fontFamily: bodyFontFamily,
                         fontWeight: bodyWeight,
                         fontStyle: 'italic',
-                        fontSize: `${Math.round(bodySize * 1.25)}px`,
-                        lineHeight: bodyLineHeight,
-                        letterSpacing: `${bodyLetterSpacing}em`,
+                        fontSize: '20px',
+                        lineHeight: 1.5,
+                        letterSpacing: '0em',
                         color: textColor
                       }}
                       autoFocus
                     />
+                  </div>
+                ) : isEditMode ? (
+                  <div className="p-3 rounded-md border-2 border-dashed" style={{ 
+                    borderColor: textColor,
+                    backgroundColor: `${textColor}10`
+                  }}>
+                    <blockquote 
+                      style={{
+                        fontFamily: bodyFontFamily,
+                        fontWeight: bodyWeight,
+                        fontStyle: 'italic',
+                        fontSize: '20px',
+                        lineHeight: 1.5,
+                        letterSpacing: '0em',
+                        borderLeft: `4px solid ${textColor}`,
+                        paddingLeft: '1rem',
+                        marginBottom: '0',
+                        opacity: 0.8
+                      }}
+                    >
+                      "{quoteText}"
+                    </blockquote>
                   </div>
                 ) : (
                   <blockquote 
@@ -804,7 +883,7 @@ export function FontPreview({
 
         {/* Button Examples */}
         <div 
-          className={`mb-8 ${isEditMode ? 'cursor-pointer' : ''}`}
+          className={`mb-8 ${isEditMode && editingSection !== 'button' ? 'cursor-pointer' : ''}`}
           onClick={() => handleSectionClick('button')}
         >
           <div className="mb-2">
@@ -900,23 +979,46 @@ export function FontPreview({
                 autoFocus
               />
             </div>
+          ) : isEditMode ? (
+            <div className="mb-4 p-3 rounded-md border-2 border-dashed inline-block" style={{ 
+              borderColor: textColor,
+              backgroundColor: `${textColor}10`
+            }}>
+              <button
+                className={getButtonClasses()}
+                style={{
+                  fontFamily: bodyFontFamily,
+                  fontWeight: Math.max(bodyWeight + 100, 500),
+                  fontStyle: bodyStyle,
+                  fontSize: '0.875rem',
+                  letterSpacing: '0em',
+                  color: buttonTextColor,
+                  backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
+                  borderColor: buttonVariant === 'outline' ? buttonBgColor : buttonVariant === 'ghost' ? 'transparent' : buttonBgColor
+                }}
+              >
+                {buttonText}
+              </button>
+            </div>
           ) : null}
           
-          <button
-            className={getButtonClasses()}
-            style={{
-              fontFamily: bodyFontFamily,
-              fontWeight: Math.max(bodyWeight + 100, 500),
-              fontStyle: bodyStyle,
-              fontSize: '0.875rem',
-              letterSpacing: `${bodyLetterSpacing}em`,
-              color: buttonTextColor,
-              backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
-              borderColor: buttonVariant === 'outline' ? buttonBgColor : buttonVariant === 'ghost' ? 'transparent' : buttonBgColor
-            }}
-          >
-            {buttonText}
-          </button>
+          {!isEditMode && (
+            <button
+              className={getButtonClasses()}
+              style={{
+                fontFamily: bodyFontFamily,
+                fontWeight: Math.max(bodyWeight + 100, 500),
+                fontStyle: bodyStyle,
+                fontSize: '0.875rem',
+                letterSpacing: `${bodyLetterSpacing}em`,
+                color: buttonTextColor,
+                backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
+                borderColor: buttonVariant === 'outline' ? buttonBgColor : buttonVariant === 'ghost' ? 'transparent' : buttonBgColor
+              }}
+            >
+              {buttonText}
+            </button>
+          )}
           
           {/* Font info under button */}
           <div className="mt-2">
@@ -964,7 +1066,7 @@ export function FontPreview({
                   marginBottom: '4px'
                 }}
               >
-                {headerText.split(' ')[0] || 'Your Name'}
+                {headerText || 'Your Name'}
               </h3>
               <p 
                 style={{ 
@@ -1192,6 +1294,71 @@ export function FontPreview({
               {buttonText}
             </button>
           </div>
+          
+          {/* Mobile App Navigation Bar */}
+          <div 
+            className="absolute bottom-0 left-0 right-0 border-t border-border"
+            style={{ 
+              backgroundColor: backgroundColor,
+              paddingTop: '12px',
+              paddingBottom: '12px'
+            }}
+          >
+            <div className="flex items-center justify-around">
+              <div className="flex flex-col items-center gap-1">
+                <Home className="w-5 h-5" style={{ color: textColor, opacity: 1 }} />
+                <span 
+                  style={{ 
+                    fontFamily: bodyFontFamily,
+                    fontSize: '11px',
+                    color: textColor,
+                    opacity: 1
+                  }}
+                >
+                  Home
+                </span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <Search className="w-5 h-5" style={{ color: textColor, opacity: 0.5 }} />
+                <span 
+                  style={{ 
+                    fontFamily: bodyFontFamily,
+                    fontSize: '11px',
+                    color: textColor,
+                    opacity: 0.5
+                  }}
+                >
+                  Search
+                </span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <Bell className="w-5 h-5" style={{ color: textColor, opacity: 0.5 }} />
+                <span 
+                  style={{ 
+                    fontFamily: bodyFontFamily,
+                    fontSize: '11px',
+                    color: textColor,
+                    opacity: 0.5
+                  }}
+                >
+                  Alerts
+                </span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <Settings className="w-5 h-5" style={{ color: textColor, opacity: 0.5 }} />
+                <span 
+                  style={{ 
+                    fontFamily: bodyFontFamily,
+                    fontSize: '11px',
+                    color: textColor,
+                    opacity: 0.5
+                  }}
+                >
+                  Settings
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       ) : visualizationType === 'book' ? (
         <div 
@@ -1268,7 +1435,8 @@ export function FontPreview({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            textAlign: 'center'
+            textAlign: 'center',
+            overflow: 'hidden'
           }}
         >
           <h1 
@@ -1319,7 +1487,7 @@ export function FontPreview({
                 marginBottom: '8px'
               }}
             >
-              {headerText.split(' ').slice(0, 2).join(' ') || 'Your Name'}
+              {headerText || 'Your Name'}
             </h1>
             <p 
               style={{ 
@@ -1411,6 +1579,348 @@ export function FontPreview({
               >
                 {bodyText.substring(0, 100)}...
               </p>
+            </div>
+          </div>
+        </div>
+      ) : visualizationType === 'dashboard' ? (
+        <div 
+          className="rounded-lg transition-colors duration-300 border border-border relative overflow-hidden flex"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            minHeight: '600px'
+          }}
+        >
+          {/* Sidebar */}
+          <div 
+            className="w-56 border-r p-6 flex flex-col gap-6"
+            style={{ 
+              borderColor: textColor + '15',
+              backgroundColor: textColor + '03',
+              overflow: 'hidden'
+            }}
+          >
+            <h1 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize * 0.6}px`,
+                letterSpacing: `${headerLetterSpacing}em`,
+                marginBottom: '8px'
+              }}
+            >
+              {headerFont} + {bodyFont}
+            </h1>
+            
+            <nav className="space-y-2">
+              {['Overview', 'Analytics', 'Reports', 'Settings', 'Team', 'Support'].map((item, index) => (
+                <div
+                  key={item}
+                  className="px-3 py-2 rounded transition-all"
+                  style={{ 
+                    backgroundColor: index === 0 ? textColor + '12' : 'transparent',
+                    fontFamily: bodyFontFamily,
+                    fontSize: `${bodySize - 1}px`,
+                    fontWeight: index === 0 ? Math.min(bodyWeight + 200, 700) : bodyWeight,
+                    opacity: index === 0 ? 1 : 0.7,
+                    cursor: 'pointer'
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
+            </nav>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 p-6" style={{ overflow: 'hidden' }}>
+            <h2 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize * 0.5}px`,
+                letterSpacing: `${headerLetterSpacing}em`,
+                marginBottom: '16px'
+              }}
+            >
+              Overview
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              {[
+                { label: 'Total Users', value: '12,543' },
+                { label: 'Revenue', value: '$45,291' },
+                { label: 'Growth', value: '+23.5%' }
+              ].map((stat, index) => (
+                <div 
+                  key={index}
+                  className="p-4 border rounded-lg"
+                  style={{ 
+                    borderColor: textColor + '20',
+                    backgroundColor: textColor + '05',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <p 
+                    style={{ 
+                      fontFamily: bodyFontFamily,
+                      fontWeight: bodyWeight,
+                      fontSize: `${bodySize - 2}px`,
+                      opacity: 0.7,
+                      marginBottom: '8px'
+                    }}
+                  >
+                    {stat.label}
+                  </p>
+                  <h3 
+                    style={{ 
+                      fontFamily: headerFontFamily,
+                      fontWeight: headerWeight,
+                      fontStyle: headerStyle,
+                      fontSize: `${headerSize * 0.7}px`,
+                      letterSpacing: `${headerLetterSpacing}em`
+                    }}
+                  >
+                    {stat.value}
+                  </h3>
+                </div>
+              ))}
+            </div>
+            
+            {/* Revenue Chart */}
+            <div className="mb-8" style={{ overflow: 'hidden' }}>
+              <h2 
+                style={{ 
+                  fontFamily: headerFontFamily,
+                  fontWeight: headerWeight,
+                  fontStyle: headerStyle,
+                  fontSize: `${headerSize * 0.5}px`,
+                  letterSpacing: `${headerLetterSpacing}em`,
+                  marginBottom: '16px'
+                }}
+              >
+                Revenue Growth
+              </h2>
+              <div className="flex items-end gap-2 h-40 border-b border-l" style={{ borderColor: textColor + '20', padding: '12px 0' }}>
+                {[45, 62, 58, 73, 68, 85, 92, 78, 88, 95, 87, 100].map((value, index) => (
+                  <div 
+                    key={index}
+                    className="flex-1 rounded-t transition-all"
+                    style={{ 
+                      height: `${value}%`,
+                      backgroundColor: textColor,
+                      opacity: 0.7
+                    }}
+                    title={`Month ${index + 1}: ${value}%`}
+                  />
+                ))}
+              </div>
+              <div className="flex justify-between mt-2" style={{ fontFamily: bodyFontFamily, fontSize: `${bodySize - 3}px`, opacity: 0.6 }}>
+                <span>Jan</span>
+                <span>Dec</span>
+              </div>
+            </div>
+
+            {/* Performance Metrics */}
+            <div style={{ overflow: 'hidden' }}>
+              <h2 
+                style={{ 
+                  fontFamily: headerFontFamily,
+                  fontWeight: headerWeight,
+                  fontStyle: headerStyle,
+                  fontSize: `${headerSize * 0.5}px`,
+                  letterSpacing: `${headerLetterSpacing}em`,
+                  marginBottom: '16px'
+                }}
+              >
+                Performance Metrics
+              </h2>
+              <div className="space-y-4">
+                {[
+                  { label: 'Customer Satisfaction', value: 87 },
+                  { label: 'Product Quality', value: 92 },
+                  { label: 'Delivery Speed', value: 78 },
+                  { label: 'Support Response', value: 95 }
+                ].map((metric, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-2">
+                      <span 
+                        style={{ 
+                          fontFamily: bodyFontFamily,
+                          fontSize: `${bodySize - 1}px`,
+                          fontWeight: bodyWeight
+                        }}
+                      >
+                        {metric.label}
+                      </span>
+                      <span 
+                        style={{ 
+                          fontFamily: bodyFontFamily,
+                          fontSize: `${bodySize - 1}px`,
+                          fontWeight: Math.min(bodyWeight + 200, 900)
+                        }}
+                      >
+                        {metric.value}%
+                      </span>
+                    </div>
+                    <div 
+                      className="w-full h-2 rounded-full"
+                      style={{ backgroundColor: textColor + '20' }}
+                    >
+                      <div 
+                        className="h-full rounded-full transition-all"
+                        style={{ 
+                          width: `${metric.value}%`,
+                          backgroundColor: textColor,
+                          opacity: 0.8
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : visualizationType === 'blog-post' ? (
+        <div 
+          className="rounded-lg transition-colors duration-300 border border-border relative overflow-hidden"
+          style={{ 
+            backgroundColor,
+            color: textColor,
+            minHeight: '600px'
+          }}
+        >
+          {/* Blog Post Hero */}
+          <div 
+            className="w-full h-48 flex items-center justify-center"
+            style={{ 
+              background: 'linear-gradient(135deg, #4d2487 0%, #8b5fbf 50%, #c89edc 100%)',
+              borderBottom: `1px solid ${textColor}20`
+            }}
+          >
+          </div>
+
+          {/* Blog Content */}
+          <div className="p-8 max-w-3xl mx-auto">
+            {/* Category Badge */}
+            <div 
+              className="inline-block px-3 py-1 rounded-full mb-4"
+              style={{ 
+                backgroundColor: textColor + '15',
+                fontFamily: bodyFontFamily,
+                fontSize: `${bodySize - 3}px`,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                fontWeight: Math.min(bodyWeight + 200, 700)
+              }}
+            >
+              {bodyText.split(' ')[0]}
+            </div>
+
+            {/* Blog Title */}
+            <h1 
+              style={{ 
+                fontFamily: headerFontFamily,
+                fontWeight: headerWeight,
+                fontStyle: headerStyle,
+                fontSize: `${headerSize * 1.3}px`,
+                lineHeight: headerLineHeight,
+                letterSpacing: `${headerLetterSpacing}em`,
+                marginBottom: '16px'
+              }}
+            >
+              {headerText}
+            </h1>
+
+            {/* Author & Meta */}
+            <div 
+              className="flex items-center gap-3 mb-8 pb-6 border-b"
+              style={{ 
+                borderColor: textColor + '15',
+                fontFamily: bodyFontFamily,
+                fontSize: `${bodySize - 1}px`,
+                opacity: 0.7
+              }}
+            >
+              <div 
+                className="w-10 h-10 rounded-full"
+                style={{ backgroundColor: textColor + '20' }}
+              />
+              <div>
+                <div style={{ fontWeight: Math.min(bodyWeight + 200, 700), opacity: 1 }}>
+                  Author Name
+                </div>
+                <div>December 18, 2025 · 5 min read</div>
+              </div>
+            </div>
+            
+            {/* Blog Body */}
+            <div className="space-y-6">
+              <p 
+                style={{ 
+                  fontFamily: bodyFontFamily,
+                  fontWeight: bodyWeight,
+                  fontStyle: bodyStyle,
+                  fontSize: `${bodySize + 1}px`,
+                  lineHeight: bodyLineHeight,
+                  letterSpacing: `${bodyLetterSpacing}em`,
+                  opacity: 0.95
+                }}
+              >
+                {bodyText}
+              </p>
+              
+              {quoteText && (
+                <blockquote 
+                  className="my-8 p-6 rounded-lg"
+                  style={{
+                    backgroundColor: textColor + '08',
+                    borderLeft: `4px solid ${textColor}`,
+                    fontFamily: bodyFontFamily,
+                    fontWeight: bodyWeight,
+                    fontStyle: 'italic',
+                    fontSize: `${Math.round(bodySize * 1.2)}px`,
+                    lineHeight: 1.6,
+                    letterSpacing: `${bodyLetterSpacing}em`,
+                    opacity: 0.9
+                  }}
+                >
+                  "{quoteText}"
+                </blockquote>
+              )}
+              
+              <p 
+                style={{ 
+                  fontFamily: bodyFontFamily,
+                  fontWeight: bodyWeight,
+                  fontStyle: bodyStyle,
+                  fontSize: `${bodySize + 1}px`,
+                  lineHeight: bodyLineHeight,
+                  letterSpacing: `${bodyLetterSpacing}em`,
+                  opacity: 0.95
+                }}
+              >
+                {bodyText.substring(0, 200)}...
+              </p>
+
+              {/* Call to Action */}
+              <div className="pt-8 mt-8 border-t" style={{ borderColor: textColor + '15' }}>
+                <button
+                  className={getButtonClasses()}
+                  style={{
+                    fontFamily: bodyFontFamily,
+                    fontWeight: Math.max(bodyWeight + 100, 500),
+                    backgroundColor: buttonVariant === 'filled' ? buttonBgColor : 'transparent',
+                    color: buttonVariant === 'filled' ? buttonTextColor : buttonBgColor,
+                    borderColor: buttonBgColor
+                  }}
+                >
+                  {buttonText}
+                </button>
+              </div>
             </div>
           </div>
         </div>

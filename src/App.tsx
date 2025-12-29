@@ -29,8 +29,8 @@ import {
 } from "./components/ui/dialog";
 import { FontPreview } from "./components/FontPreview";
 import { PairingJustification } from "./components/PairingJustification";
-import { FontControls } from "./components/FontControls";
-import { ColorControls } from "./components/ColorControls";
+import { FontControlsTabbed } from "./components/FontControlsTabbed";
+import { ColorControlsTabbed } from "./components/ColorControlsTabbed";
 import { ButtonControls } from "./components/ButtonControls";
 import { MobileControls } from "./components/MobileControls";
 import { QuickActions } from "./components/QuickActions";
@@ -55,15 +55,19 @@ export default function App() {
   // Suppress CSS rules access errors (caused by browser extensions trying to read Google Fonts stylesheets)
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
-      if (event.message.includes('cssRules') || event.message.includes('CSSStyleSheet')) {
+      if (
+        event.message.includes("cssRules") ||
+        event.message.includes("CSSStyleSheet")
+      ) {
         event.preventDefault();
         event.stopPropagation();
         return false;
       }
     };
-    
-    window.addEventListener('error', handleError);
-    return () => window.removeEventListener('error', handleError);
+
+    window.addEventListener("error", handleError);
+    return () =>
+      window.removeEventListener("error", handleError);
   }, []);
 
   // Validate font pairings on mount (development only)
@@ -121,12 +125,14 @@ export default function App() {
     initialPairData.bodyStyle,
   );
   const [headerSize, setHeaderSize] = useState(40); // Size in pixels
-  const [bodySize, setBodySize] = useState(16); // Size in pixels
+  const [bodySize, setBodySize] = useState(18); // Size in pixels
   const [headerLineHeight, setHeaderLineHeight] = useState(1.2);
   const [bodyLineHeight, setBodyLineHeight] = useState(1.6);
   const [headerLetterSpacing, setHeaderLetterSpacing] =
     useState(0); // em
   const [bodyLetterSpacing, setBodyLetterSpacing] = useState(0); // em
+  const [isGoldenRatioEnabled, setIsGoldenRatioEnabled] =
+    useState(false);
 
   // Custom text content
   const defaultTexts = {
@@ -138,7 +144,7 @@ export default function App() {
   };
 
   const [headerText, setHeaderText] = useState(
-    `${currentPair.header} & ${currentPair.body}`,
+    `${currentPair.header} + ${currentPair.body}`,
   );
   const [bodyText, setBodyText] = useState(defaultTexts.body);
   const [quoteText, setQuoteText] = useState(
@@ -160,6 +166,9 @@ export default function App() {
   // Font locks
   const [isHeaderLocked, setIsHeaderLocked] = useState(false);
   const [isBodyLocked, setIsBodyLocked] = useState(false);
+
+  // Edit mode state
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Controls for mobile sheet and font code expansion
   const [isMobileSheetOpen, setIsMobileSheetOpen] =
@@ -210,7 +219,7 @@ export default function App() {
   useEffect(() => {
     if (!hasManuallyEditedHeader) {
       setHeaderText(
-        `${currentPair.header} & ${currentPair.body}`,
+        `${currentPair.header} + ${currentPair.body}`,
       );
     }
   }, [
@@ -425,13 +434,97 @@ export default function App() {
   };
 
   const handleResetToDefaults = () => {
+    // Store previous values for undo
+    const previousValues = {
+      headerText,
+      bodyText,
+      quoteText,
+      buttonText,
+      hasManuallyEditedHeader,
+    };
+
     setHeaderText(
-      `${currentPair.header} & ${currentPair.body}`,
+      `${currentPair.header} + ${currentPair.body}`,
     );
     setBodyText(defaultTexts.body);
     setQuoteText(defaultTexts.quote);
     setButtonText(defaultTexts.button);
     setHasManuallyEditedHeader(false);
+
+    toast.success("Default Text Restored!", {
+      action: {
+        label: "Undo",
+        onClick: () => {
+          setHeaderText(previousValues.headerText);
+          setBodyText(previousValues.bodyText);
+          setQuoteText(previousValues.quoteText);
+          setButtonText(previousValues.buttonText);
+          setHasManuallyEditedHeader(
+            previousValues.hasManuallyEditedHeader,
+          );
+          toast.success("Custom Text Restored!", {
+            icon: (
+              <div
+                style={{
+                  backgroundColor: "#4d2487",
+                  borderRadius: "50%",
+                  width: "20px",
+                  height: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 6L5 9L10 3"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            ),
+          });
+        },
+      },
+      icon: (
+        <div
+          style={{
+            backgroundColor: "#4d2487",
+            borderRadius: "50%",
+            width: "20px",
+            height: "20px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2 6L5 9L10 3"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      ),
+    });
   };
 
   const handleSwapFonts = () => {
@@ -584,9 +677,9 @@ export default function App() {
       setSavedPairingsVersion((v) => v + 1);
 
       // Show success toast with action to view saved pairings
-      toast.success("Font pairing saved!", {
+      toast.success("Font Pairing Saved!", {
         action: {
-          label: "Show my saved pairings",
+          label: "Show My Saved Pairings",
           onClick: () => {
             savedPairingsRef.current?.scrollIntoView({
               behavior: "smooth",
@@ -642,15 +735,73 @@ export default function App() {
   };
 
   const handleResetTypography = () => {
+    // Store previous values for undo
+    const previousValues = {
+      headerSize,
+      bodySize,
+      headerLineHeight,
+      bodyLineHeight,
+      headerLetterSpacing,
+      bodyLetterSpacing,
+    };
+
     setHeaderSize(40);
-    setBodySize(16);
+    setBodySize(18);
     setHeaderLineHeight(1.2);
     setBodyLineHeight(1.6);
     setHeaderLetterSpacing(0);
     setBodyLetterSpacing(0);
     toast.success(
-      "Font Size, Height and Spacing reset to default",
+      "Font Size, Height And Spacing Reset To Default",
       {
+        action: {
+          label: "Undo",
+          onClick: () => {
+            setHeaderSize(previousValues.headerSize);
+            setBodySize(previousValues.bodySize);
+            setHeaderLineHeight(
+              previousValues.headerLineHeight,
+            );
+            setBodyLineHeight(previousValues.bodyLineHeight);
+            setHeaderLetterSpacing(
+              previousValues.headerLetterSpacing,
+            );
+            setBodyLetterSpacing(
+              previousValues.bodyLetterSpacing,
+            );
+            toast.success("Typography Restored!", {
+              icon: (
+                <div
+                  style={{
+                    backgroundColor: "#4d2487",
+                    borderRadius: "50%",
+                    width: "20px",
+                    height: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2 6L5 9L10 3"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              ),
+            });
+          },
+        },
         icon: (
           <div
             style={{
@@ -684,6 +835,46 @@ export default function App() {
     );
   };
 
+  // Handlers for golden ratio linking
+  const handleHeaderSizeChange = (size: number) => {
+    setHeaderSize(size);
+    if (isGoldenRatioEnabled) {
+      const goldenRatio = 1.618;
+      const newBodySize = Math.round(size / goldenRatio);
+      setBodySize(newBodySize);
+    }
+  };
+
+  const handleBodySizeChange = (size: number) => {
+    setBodySize(size);
+    if (isGoldenRatioEnabled) {
+      const goldenRatio = 1.618;
+      const newHeaderSize = Math.round(size * goldenRatio);
+      setHeaderSize(newHeaderSize);
+    }
+  };
+
+  const handleGoldenRatioToggle = (enabled: boolean) => {
+    setIsGoldenRatioEnabled(enabled);
+    if (enabled) {
+      const goldenRatio = 1.618;
+      // Use the larger size as the base to avoid making things smaller
+      if (headerSize >= bodySize) {
+        // Header is larger or equal - use it as base, calculate body
+        const newBodySize = Math.round(
+          headerSize / goldenRatio,
+        );
+        setBodySize(newBodySize);
+      } else {
+        // Body is larger - use it as base, calculate header
+        const newHeaderSize = Math.round(
+          bodySize * goldenRatio,
+        );
+        setHeaderSize(newHeaderSize);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Toaster />
@@ -700,8 +891,8 @@ export default function App() {
               </span>
             </h1>
             <p className="text-sm text-muted-foreground">
-              Discover and Visualize perfect font combinations
-              with Google Fonts
+              Quickly Discover and Visualize perfect font
+              combinations with Google Fonts
             </p>
           </div>
 
@@ -730,9 +921,10 @@ export default function App() {
                       About
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Easily visualize and discover beautiful,
-                      accessible font combinations using Google
-                      Fonts. With {googleFonts.length} fonts and{" "}
+                      Font Pairing Studio lets you quickly and
+                      easily visualize and discover perfect font
+                      combinations using Google Fonts. With{" "}
+                      {googleFonts.length} fonts and{" "}
                       {fontPairings.length} curated pairings
                       based on both professional recommendations
                       and typography principles, find the
@@ -767,21 +959,21 @@ export default function App() {
                         <span className="text-[#4d2487] dark:text-white">
                           ✓
                         </span>
+                        <span>Style Contrast Generation</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="text-[#4d2487] dark:text-white">
+                          ✓
+                        </span>
+                        <span>12 Font Style Categories</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="text-[#4d2487] dark:text-white">
+                          ✓
+                        </span>
                         <span>
-                          Low/Medium/High Style Contrast
+                          WCAG AA/AAA Contrast Checking
                         </span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-[#4d2487] dark:text-white">
-                          ✓
-                        </span>
-                        <span>12 Style Categories</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-[#4d2487] dark:text-white">
-                          ✓
-                        </span>
-                        <span>WCAG 2.1 AA/AAA Checking</span>
                       </div>
                       <div className="flex gap-2">
                         <span className="text-[#4d2487] dark:text-white">
@@ -813,7 +1005,7 @@ export default function App() {
                         <span className="text-[#4d2487] dark:text-white">
                           ✓
                         </span>
-                        <span>Accessible Color Picker</span>
+                        <span>Accessible Color Generation</span>
                       </div>
                       <div className="flex gap-2">
                         <span className="text-[#4d2487] dark:text-white">
@@ -832,6 +1024,12 @@ export default function App() {
                           ✓
                         </span>
                         <span>Dark Mode Support</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="text-[#4d2487] dark:text-white">
+                          ✓
+                        </span>
+                        <span>Golden Ratio Preview</span>
                       </div>
                       <div className="flex gap-2">
                         <span className="text-[#4d2487] dark:text-white">
@@ -893,7 +1091,7 @@ export default function App() {
                           href="https://hurtic.net"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#4d2487] dark:text-white hover:underline font-semibold"
+                          className="text-[#4d2487] dark:text-[#4d2487] hover:underline font-semibold"
                         >
                           Harun Hurtic
                         </a>
@@ -968,6 +1166,7 @@ export default function App() {
               isBodyLocked={isBodyLocked}
               onHeaderLockToggle={handleHeaderLockToggle}
               onBodyLockToggle={handleBodyLockToggle}
+              onEditModeChange={setIsEditMode}
               onUnsavePairing={() => {
                 try {
                   const stored = localStorage.getItem(
@@ -993,7 +1192,7 @@ export default function App() {
                     setSavedPairingsVersion((v) => v + 1);
 
                     // Show toast with undo action
-                    toast.success("Font pairing removed", {
+                    toast.success("Font Pairing Removed", {
                       action: {
                         label: "Undo",
                         onClick: () => {
@@ -1016,7 +1215,7 @@ export default function App() {
                               (v) => v + 1,
                             );
                             toast.success(
-                              "Font pairing restored!",
+                              "Font Pairing Restored!",
                               {
                                 icon: (
                                   <div
@@ -1101,10 +1300,14 @@ export default function App() {
                 }
               }}
             />
-            <PairingJustification
-              headerFont={currentPair.header}
-              bodyFont={currentPair.body}
-            />
+            {/* Show Pairing Justification on mobile only */}
+            <div className="xl:hidden">
+              <PairingJustification
+                headerFont={currentPair.header}
+                bodyFont={currentPair.body}
+              />
+            </div>
+
             <div ref={savedPairingsRef}>
               <SavedPairings
                 onLoadPairing={handleLoadSavedPairing}
@@ -1118,7 +1321,7 @@ export default function App() {
           </div>
 
           {/* Controls Sidebar - Hidden on mobile */}
-          <div className="hidden xl:block">
+          <div className="hidden xl:block space-y-4">
             <Card>
               <CardContent className="p-6">
                 <Tabs
@@ -1178,7 +1381,7 @@ export default function App() {
                   </TabsList>
 
                   <TabsContent value="fonts" className="mt-0">
-                    <FontControls
+                    <FontControlsTabbed
                       selectedStyle={selectedStyle}
                       onStyleChange={setSelectedStyle}
                       onRandomize={handleRandomize}
@@ -1198,8 +1401,10 @@ export default function App() {
                       onBodyStyleChange={setBodyStyle}
                       headerSize={headerSize}
                       bodySize={bodySize}
-                      onHeaderSizeChange={setHeaderSize}
-                      onBodySizeChange={setBodySize}
+                      onHeaderSizeChange={
+                        handleHeaderSizeChange
+                      }
+                      onBodySizeChange={handleBodySizeChange}
                       headerLineHeight={headerLineHeight}
                       bodyLineHeight={bodyLineHeight}
                       onHeaderLineHeightChange={
@@ -1226,11 +1431,18 @@ export default function App() {
                         handleHeaderLockToggle
                       }
                       onBodyLockToggle={handleBodyLockToggle}
+                      isEditMode={isEditMode}
+                      isGoldenRatioEnabled={
+                        isGoldenRatioEnabled
+                      }
+                      onGoldenRatioToggle={
+                        handleGoldenRatioToggle
+                      }
                     />
                   </TabsContent>
 
                   <TabsContent value="colors" className="mt-0">
-                    <ColorControls
+                    <ColorControlsTabbed
                       textColor={textColor}
                       backgroundColor={backgroundColor}
                       buttonBgColor={buttonBgColor}
@@ -1279,6 +1491,10 @@ export default function App() {
                 </Tabs>
               </CardContent>
             </Card>
+            <PairingJustification
+              headerFont={currentPair.header}
+              bodyFont={currentPair.body}
+            />
           </div>
         </div>
 
@@ -1330,8 +1546,8 @@ export default function App() {
         onBodyStyleChange={setBodyStyle}
         headerSize={headerSize}
         bodySize={bodySize}
-        onHeaderSizeChange={setHeaderSize}
-        onBodySizeChange={setBodySize}
+        onHeaderSizeChange={handleHeaderSizeChange}
+        onBodySizeChange={handleBodySizeChange}
         headerLineHeight={headerLineHeight}
         bodyLineHeight={bodyLineHeight}
         onHeaderLineHeightChange={setHeaderLineHeight}
@@ -1372,6 +1588,9 @@ export default function App() {
         shouldExpandFontCode={shouldExpandFontCode}
         onFontCodeExpandChange={setShouldExpandFontCode}
         initialTab={mobileInitialTab}
+        isEditMode={isEditMode}
+        isGoldenRatioEnabled={isGoldenRatioEnabled}
+        onGoldenRatioToggle={handleGoldenRatioToggle}
       />
 
       <Toaster />

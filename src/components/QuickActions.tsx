@@ -15,7 +15,7 @@ export function QuickActions({
   return (
     <div className="xl:hidden bg-muted/20 p-4 rounded-lg mb-4">
       <h4 className="font-medium mb-2 text-center">Quick Actions</h4>
-      <div className="flex gap-2 flex-wrap">
+      <div className="grid grid-cols-2 gap-2">
         {onRandomizeFonts && (
           <Button 
             onClick={onRandomizeFonts} 
@@ -24,22 +24,24 @@ export function QuickActions({
             style={{ backgroundColor: '#4d2487', borderColor: '#4d2487', color: 'white' }}
           >
             <Shuffle className="w-4 h-4 mr-2" />
-            Generate Font Pairing
+            <span className="hidden sm:inline">Generate Fonts</span>
+            <span className="sm:hidden">Fonts</span>
           </Button>
         )}
         <Button 
           onClick={onRandomizeColors} 
-          className="flex-1" 
+          className="w-full" 
           size="sm"
           style={{ backgroundColor: '#4d2487', borderColor: '#4d2487', color: 'white' }}
         >
           <Palette className="w-4 h-4 mr-2" />
-          Random Colors
+          <span className="hidden sm:inline">Random Colors</span>
+          <span className="sm:hidden">Colors</span>
         </Button>
         {onUseFonts && (
           <Button 
             onClick={onUseFonts} 
-            className="w-full" 
+            className="w-full col-span-2" 
             size="sm"
             style={{ 
               backgroundColor: '#4d2487',

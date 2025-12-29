@@ -62,7 +62,7 @@ export const FontCode = forwardRef<FontCodeRef, FontCodeProps>((props, ref) => {
         await navigator.clipboard.writeText(text);
         setCopiedSection(section);
         setTimeout(() => setCopiedSection(null), 2000);
-        toast.success('Copied to clipboard!', {
+        toast.success('Copied To Clipboard!', {
           icon: (
             <div style={{ 
               backgroundColor: '#4d2487', 
@@ -331,7 +331,7 @@ ${getWebCSS()}
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success('Font pairing specification downloaded!', {
+    toast.success('Font Pairing Specification Downloaded!', {
       icon: (
         <div style={{ 
           backgroundColor: '#4d2487', 
